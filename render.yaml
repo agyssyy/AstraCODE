@@ -1,0 +1,51 @@
+services:
+  - type: web
+    name: astracode
+    runtime: node
+    plan: starter
+    region: singapore
+    buildCommand: corepack enable && corepack prepare pnpm@9.15.9 --activate && pnpm install --frozen-lockfile --prod=false && pnpm --filter @astracode/web build
+    startCommand: sh scripts/start-production.sh
+    healthCheckPath: /backend/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 22.12.0
+      - key: NODE_ENV
+        value: production
+      - key: API_HOST
+        value: 127.0.0.1
+      - key: API_PORT
+        value: 4000
+      - key: API_INTERNAL_URL
+        value: http://127.0.0.1:4000
+      - key: ASTRACODE_DATA_DIR
+        value: /data
+      - key: AUTH_EMAIL_CODE_REQUIRED
+        value: auto
+      - key: OPENCODE_FREE_ENABLED
+        value: "false"
+      - key: APP_ENCRYPTION_KEY
+        generateValue: true
+      - key: PREVIEW_SECRET
+        generateValue: true
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: BUILTIN_AI_API_KEY
+        sync: false
+    disk:
+      name: astracode-data
+      mountPath: /data
+      sizeGB: 1

@@ -1,0 +1,257 @@
+import type { ProviderKind } from "@astracode/shared";
+
+export type ProviderCategory = "popular" | "fast" | "gateway" | "local" | "unsupported";
+
+export type ProviderPreset = {
+  id: string;
+  label: string;
+  name: string;
+  kind: ProviderKind;
+  baseUrl: string;
+  note: string;
+  category: ProviderCategory;
+  needsKey: boolean;
+  available: boolean;
+  reason?: string;
+};
+
+export const PROVIDER_CATEGORIES: { id: ProviderCategory | "all"; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "popular", label: "Popular" },
+  { id: "fast", label: "Fast inference" },
+  { id: "gateway", label: "Gateways" },
+  { id: "local", label: "Local" },
+];
+
+export const PROVIDER_PRESETS: ProviderPreset[] = [
+  {
+    id: "openai",
+    label: "OpenAI",
+    name: "OpenAI",
+    kind: "openai",
+    baseUrl: "https://api.openai.com/v1",
+    note: "ChatGPT and Codex models through the official API",
+    category: "popular",
+    needsKey: true,
+    available: true,
+  },
+  {
+    id: "anthropic",
+    label: "Anthropic",
+    name: "Anthropic",
+    kind: "custom",
+    baseUrl: "https://api.anthropic.com/v1",
+    note: "Claude models through Anthropic's OpenAI compatibility",
+    category: "popular",
+    needsKey: true,
+    available: true,
+  },
+  {
+    id: "google",
+    label: "Google Gemini",
+    name: "Google Gemini",
+    kind: "custom",
+    baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai/",
+    note: "Gemini models through the OpenAI-compatible endpoint",
+    category: "popular",
+    needsKey: true,
+    available: true,
+  },
+  {
+    id: "deepseek",
+    label: "DeepSeek",
+    name: "DeepSeek",
+    kind: "custom",
+    baseUrl: "https://api.deepseek.com/v1",
+    note: "DeepSeek chat and reasoning models",
+    category: "popular",
+    needsKey: true,
+    available: true,
+  },
+  {
+    id: "xai",
+    label: "xAI",
+    name: "xAI",
+    kind: "custom",
+    baseUrl: "https://api.x.ai/v1",
+    note: "Grok models from xAI",
+    category: "popular",
+    needsKey: true,
+    available: true,
+  },
+  {
+    id: "mistral",
+    label: "Mistral",
+    name: "Mistral",
+    kind: "custom",
+    baseUrl: "https://api.mistral.ai/v1",
+    note: "Mistral and Codestral models",
+    category: "popular",
+    needsKey: true,
+    available: true,
+  },
+  {
+    id: "groq",
+    label: "Groq",
+    name: "Groq",
+    kind: "custom",
+    baseUrl: "https://api.groq.com/openai/v1",
+    note: "Very fast inference for open models",
+    category: "fast",
+    needsKey: true,
+    available: true,
+  },
+  {
+    id: "cerebras",
+    label: "Cerebras",
+    name: "Cerebras",
+    kind: "custom",
+    baseUrl: "https://api.cerebras.ai/v1",
+    note: "Wafer-scale inference with low latency",
+    category: "fast",
+    needsKey: true,
+    available: true,
+  },
+  {
+    id: "nvidia",
+    label: "NVIDIA NIM",
+    name: "NVIDIA NIM",
+    kind: "custom",
+    baseUrl: "https://integrate.api.nvidia.com/v1",
+    note: "100+ hosted models with a free trial tier",
+    category: "fast",
+    needsKey: true,
+    available: true,
+  },
+  {
+    id: "openrouter",
+    label: "OpenRouter",
+    name: "OpenRouter",
+    kind: "custom",
+    baseUrl: "https://openrouter.ai/api/v1",
+    note: "Many providers and models behind one key",
+    category: "gateway",
+    needsKey: true,
+    available: true,
+  },
+  {
+    id: "opencode",
+    label: "OpenCode",
+    name: "OpenCode",
+    kind: "custom",
+    baseUrl: "https://opencode.ai/inference/openai/v1",
+    note: "OpenCode Console models, one key",
+    category: "gateway",
+    needsKey: true,
+    available: true,
+  },
+  {
+    id: "together",
+    label: "Together AI",
+    name: "Together AI",
+    kind: "custom",
+    baseUrl: "https://api.together.xyz/v1",
+    note: "Open models on dedicated endpoints",
+    category: "gateway",
+    needsKey: true,
+    available: true,
+  },
+  {
+    id: "fireworks",
+    label: "Fireworks",
+    name: "Fireworks",
+    kind: "custom",
+    baseUrl: "https://api.fireworks.ai/inference/v1",
+    note: "Fast open-model inference",
+    category: "gateway",
+    needsKey: true,
+    available: true,
+  },
+  {
+    id: "cohere",
+    label: "Cohere",
+    name: "Cohere",
+    kind: "custom",
+    baseUrl: "https://api.cohere.ai/compatibility/v1",
+    note: "Command models through the compatibility API",
+    category: "gateway",
+    needsKey: true,
+    available: true,
+  },
+  {
+    id: "perplexity",
+    label: "Perplexity",
+    name: "Perplexity",
+    kind: "custom",
+    baseUrl: "https://api.perplexity.ai",
+    note: "Sonar models; add model IDs manually",
+    category: "gateway",
+    needsKey: true,
+    available: true,
+  },
+  {
+    id: "ollama",
+    label: "Ollama",
+    name: "Ollama (local)",
+    kind: "ollama",
+    baseUrl: "http://127.0.0.1:11434",
+    note: "Local models, no key. Keep them warm for speed",
+    category: "local",
+    needsKey: false,
+    available: true,
+  },
+  {
+    id: "lmstudio",
+    label: "LM Studio",
+    name: "LM Studio",
+    kind: "custom",
+    baseUrl: "http://127.0.0.1:1234/v1",
+    note: "Local OpenAI-compatible server",
+    category: "local",
+    needsKey: false,
+    available: true,
+  },
+  {
+    id: "vllm",
+    label: "vLLM",
+    name: "vLLM",
+    kind: "custom",
+    baseUrl: "http://127.0.0.1:8000/v1",
+    note: "Self-hosted high-throughput inference",
+    category: "local",
+    needsKey: false,
+    available: true,
+  },
+  {
+    id: "litellm",
+    label: "LiteLLM",
+    name: "LiteLLM",
+    kind: "custom",
+    baseUrl: "http://127.0.0.1:4000/v1",
+    note: "Local gateway in front of many providers",
+    category: "local",
+    needsKey: false,
+    available: true,
+  },
+  {
+    id: "copilot",
+    label: "GitHub Copilot",
+    name: "GitHub Copilot",
+    kind: "custom",
+    baseUrl: "",
+    note: "Requires an undocumented OAuth token exchange",
+    category: "unsupported",
+    needsKey: true,
+    available: false,
+    reason: "Copilot has no public inference API. Use an API-key provider instead.",
+  },
+];
+
+export function presetForProvider(name: string, baseUrl: string): ProviderPreset | undefined {
+  return PROVIDER_PRESETS.find(
+    (preset) =>
+      preset.available &&
+      (preset.baseUrl.replace(/\/+$/, "") === baseUrl.replace(/\/+$/, "") ||
+        preset.name === name),
+  );
+}

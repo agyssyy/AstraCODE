@@ -207,15 +207,22 @@ export function ChatView() {
     setStoredModelId(id);
   };
 
-  const selectConversation = (id: string | null) => {
+  const cancelStream = () => {
+    const id = streamConversationRef.current ?? activeId;
+    if (id) void api.post("/chat/stop", { conversationId: id }).catch(() => null);
     abortRef.current?.abort();
+    streamConversationRef.current = null;
+  };
+
+  const selectConversation = (id: string | null) => {
+    cancelStream();
     setStreaming(false);
     setSidebarOpen(false);
     router.push(id ? `/chat?c=${id}` : "/chat");
   };
 
   const stop = () => {
-    abortRef.current?.abort();
+    cancelStream();
     setStreaming(false);
     setOptimisticUser(null);
     setStreamText("");

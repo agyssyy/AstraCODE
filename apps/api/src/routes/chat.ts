@@ -32,6 +32,7 @@ const CONTEXT_PER_FILE = 3000;
 const CONTEXT_TOTAL = 14_000;
 const HISTORY_MESSAGES = 20;
 const HISTORY_CHARS = 50_000;
+const activeChats = new Map<string, AbortController>();
 
 async function buildProjectContext(
   app: FastifyInstance,
@@ -202,12 +203,10 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
       const controller = new AbortController();
 
       const onClose = () => {
-        if (!finished) {
-          clientGone = true;
-          controller.abort();
-        }
+        clientGone = true;
       };
       reply.raw.on("close", onClose);
+      activeChats.set(convo.id, controller);
 
       const persistAssistant = async (): Promise<string | null> => {
         if (!fullText.trim()) return null;
@@ -271,10 +270,7 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
         });
 
         for await (const event of stream) {
-          if (sse.closed()) {
-            controller.abort();
-            break;
-          }
+          if (sse.closed()) clientGone = true;
           if (event.type === "text") {
             fullText += event.text;
             send({ type: "token", text: event.text });
@@ -315,11 +311,32 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
       } finally {
         finished = true;
         reply.raw.off("close", onClose);
+        if (activeChats.get(convo.id) === controller) activeChats.delete(convo.id);
         sse.end();
       }
       return reply;
     },
   );
+
+  app.post("/chat/stop", { preHandler: app.authenticate }, async (request) => {
+    const body = (request.body ?? {}) as { conversationId?: unknown };
+    const conversationId =
+      typeof body.conversationId === "string" ? body.conversationId : "";
+    if (!conversationId) return { stopped: false };
+    const rows = await app.db
+      .select({ id: conversations.id })
+      .from(conversations)
+      .where(
+        and(eq(conversations.id, conversationId), eq(conversations.userId, request.user.id)),
+      )
+      .limit(1);
+    if (!rows[0]) throw notFound("Conversation not found");
+    const controller = activeChats.get(conversationId);
+    if (!controller) return { stopped: false };
+    controller.abort();
+    activeChats.delete(conversationId);
+    return { stopped: true };
+  });
 
   app.get("/chat/health", { preHandler: app.authenticate }, async () => ({
     status: "ready",

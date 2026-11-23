@@ -77,8 +77,16 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </div>
       </aside>
 
-      <div className="flex min-h-dvh flex-col">
-        <div className="flex h-16 items-center justify-between border-b border-[hsl(var(--border))] px-4 lg:justify-end lg:border-b-0 lg:px-8">
+      <div className="relative flex min-h-dvh flex-col overflow-hidden bg-[hsl(var(--muted))]">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(40rem_30rem_at_88%_-4%,hsl(var(--signal)/0.22),transparent_62%),radial-gradient(32rem_26rem_at_-6%_104%,hsl(var(--violet)/0.18),transparent_66%),linear-gradient(165deg,hsl(var(--card)/0.6),transparent_45%)]"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 opacity-[0.22] [background-image:linear-gradient(hsl(var(--border))_1px,transparent_1px),linear-gradient(90deg,hsl(var(--border))_1px,transparent_1px)] [background-size:52px_52px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_78%)]"
+        />
+        <div className="relative z-10 flex h-16 items-center justify-between px-4 lg:justify-end lg:px-8">
           <Link href="/" className="lg:hidden" aria-label="AstraCode home">
             <Logo size={24} />
           </Link>
@@ -90,11 +98,21 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           </Link>
         </div>
 
-        <div className="flex flex-1 items-center justify-center px-4 pb-14 pt-6 sm:px-8 lg:pb-20">
-          <div className="w-full max-w-[390px]">{children}</div>
+        <div className="relative z-10 flex flex-1 items-center justify-center px-4 pb-12 pt-4 sm:px-8 lg:pb-16">
+          <div className="relative w-full max-w-[440px] overflow-hidden rounded-[30px] border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-6 shadow-[0_1px_0_0_hsl(var(--card))_inset,0_36px_100px_-44px_hsl(var(--primary)/0.55),0_18px_50px_-32px_hsl(var(--violet)/0.45)] sm:p-9">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,hsl(var(--signal)/0.7),hsl(var(--violet)/0.6),transparent)]"
+            />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-20 -top-24 size-56 rounded-full bg-[hsl(var(--signal)/0.08)] blur-3xl"
+            />
+            <div className="relative">{children}</div>
+          </div>
         </div>
 
-        <div className="flex items-center justify-between border-t border-[hsl(var(--border))] px-4 py-4 text-[10.5px] text-[hsl(var(--muted-foreground))] sm:px-8">
+        <div className="relative z-10 flex items-center justify-between border-t border-[hsl(var(--border))] px-4 py-4 text-[10.5px] text-[hsl(var(--muted-foreground))] sm:px-8">
           <span>AstraCode</span>
           <span>Encrypted in transit</span>
         </div>

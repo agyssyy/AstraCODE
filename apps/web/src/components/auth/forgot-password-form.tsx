@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, LoaderCircle, MailCheck } from "lucide-react";
+import { AlertCircle, ArrowLeft, ArrowRight, LoaderCircle, Mail, MailCheck } from "lucide-react";
 import { Button, Field, Input } from "@astracode/ui";
 import { emailSchema } from "@astracode/shared";
 import { api, errorMessage } from "@/lib/api";
@@ -74,28 +74,33 @@ export function ForgotPasswordForm() {
 
       <form onSubmit={onSubmit} className="mt-8 space-y-5" noValidate>
         <Field label="Email" htmlFor="email">
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            placeholder="you@example.com"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-          />
+          <div className="relative">
+            <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              className="h-12 rounded-xl border-[hsl(var(--border))] bg-[hsl(var(--muted))]/45 pl-10 shadow-xs"
+              required
+            />
+          </div>
         </Field>
 
         {error ? (
           <div
             role="alert"
-            className="border-l-2 border-[hsl(var(--destructive))] bg-[hsl(var(--destructive))]/8 px-3 py-2.5 font-mono text-[11px] leading-relaxed text-[hsl(var(--destructive))]"
+            className="flex items-start gap-2.5 rounded-xl border border-[hsl(var(--destructive))]/25 bg-[hsl(var(--destructive))]/8 px-3.5 py-3 text-[12px] leading-relaxed text-[hsl(var(--destructive))]"
           >
-            {error}
+            <AlertCircle className="mt-0.5 size-4 shrink-0" />
+            <span>{error}</span>
           </div>
         ) : null}
 
-        <Button type="submit" className="h-11 w-full" size="lg" disabled={pending}>
+        <Button type="submit" className="h-12 w-full rounded-xl bg-[linear-gradient(135deg,hsl(var(--primary)),hsl(var(--violet)))] shadow-[0_16px_40px_-18px_hsl(var(--primary)/0.9)]" size="lg" disabled={pending}>
           {pending ? (
             <LoaderCircle className="size-4 animate-spin" />
           ) : (

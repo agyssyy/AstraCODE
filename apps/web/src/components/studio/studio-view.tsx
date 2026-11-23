@@ -456,7 +456,7 @@ export function StudioView() {
     return (
       <div className="relative flex h-full items-start justify-center overflow-y-auto sm:items-center">
         <div className="grid-bg pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
-        <div className="relative w-full max-w-2xl px-4 py-10 sm:py-16">
+        <div className="relative w-full max-w-4xl px-5 py-10 sm:px-8 sm:py-16">
           <div className="animate-fade-up">
             <p className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.16em] text-[hsl(var(--muted-foreground))]">
               <span className="size-1.5 bg-[hsl(var(--signal))]" />
@@ -477,9 +477,9 @@ export function StudioView() {
                 setNewTemplate("blank");
                 setCreateOpen(true);
               }}
-              className="group flex flex-col items-start border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-[hsl(var(--signal))]/60"
+              className="group flex flex-col items-start rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-5 text-left shadow-[0_1px_2px_rgb(0_0_0/0.04),0_20px_40px_-34px_rgb(0_0_0/0.25)] transition-all duration-200 hover:-translate-y-1 hover:border-[hsl(var(--signal))]/60 hover:shadow-[0_24px_50px_-28px_hsl(var(--signal)/0.3)]"
             >
-              <span className="flex size-9 items-center justify-center border border-[hsl(var(--border))] bg-[hsl(var(--background))] transition-colors group-hover:border-[hsl(var(--signal))]/50 group-hover:text-[hsl(var(--signal))]">
+              <span className="flex size-9 items-center justify-center rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] transition-colors group-hover:border-[hsl(var(--signal))]/50 group-hover:text-[hsl(var(--signal))]">
                 <Plus className="size-4" />
               </span>
               <span className="mt-3 flex w-full items-center justify-between text-[13px] font-semibold">
@@ -499,9 +499,9 @@ export function StudioView() {
                   setNewTemplate(template.id);
                   setCreateOpen(true);
                 }}
-                className="group flex flex-col items-start border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-[hsl(var(--signal))]/60"
+                className="group flex flex-col items-start rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-5 text-left shadow-[0_1px_2px_rgb(0_0_0/0.04),0_20px_40px_-34px_rgb(0_0_0/0.25)] transition-all duration-200 hover:-translate-y-1 hover:border-[hsl(var(--signal))]/60 hover:shadow-[0_24px_50px_-28px_hsl(var(--signal)/0.3)]"
               >
-                <span className="flex size-9 items-center justify-center border border-[hsl(var(--border))] bg-[hsl(var(--background))] transition-colors group-hover:border-[hsl(var(--signal))]/50 group-hover:text-[hsl(var(--signal))]">
+                <span className="flex size-9 items-center justify-center rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] transition-colors group-hover:border-[hsl(var(--signal))]/50 group-hover:text-[hsl(var(--signal))]">
                   <Braces className="size-4" />
                 </span>
                 <span className="mt-3 flex w-full items-center justify-between text-[13px] font-semibold">

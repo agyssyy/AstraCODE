@@ -108,18 +108,24 @@ function Eyebrow({ children }: { children: ReactNode }) {
 
 function WorkspaceMock() {
   return (
-    <div className="relative mx-auto mt-14 max-w-5xl">
+    <div className="relative mx-auto mt-14 max-w-5xl px-px pb-1 sm:mt-20">
       <div
         aria-hidden="true"
-        className="absolute -inset-x-12 -top-16 bottom-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--signal))_0%,transparent_65%)] opacity-[0.10] blur-2xl"
+        className="absolute -inset-x-12 -top-16 bottom-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--signal))_0%,transparent_65%)] opacity-[0.16] blur-3xl"
       />
-      <div className="relative overflow-hidden rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-lg">
+      <div className="mock-float relative overflow-hidden rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))]/90 backdrop-blur-xl">
+        <div aria-hidden="true" className="mock-sheen" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[hsl(var(--signal))]/70 to-transparent" />
         <div className="flex items-center gap-2 border-b border-[hsl(var(--border))] bg-[hsl(var(--muted))]/50 px-4 py-3">
-          <span className="size-2.5 rounded-full bg-[hsl(var(--border))]" />
-          <span className="size-2.5 rounded-full bg-[hsl(var(--border))]" />
-          <span className="size-2.5 rounded-full bg-[hsl(var(--border))]" />
-          <span className="mx-auto text-[11px] font-medium text-[hsl(var(--muted-foreground))]">
+          <span className="size-2.5 rounded-full bg-[hsl(var(--destructive))]/70" />
+          <span className="size-2.5 rounded-full bg-[hsl(var(--warning))]/70" />
+          <span className="size-2.5 rounded-full bg-[hsl(var(--signal))]/80" />
+          <span className="mx-auto inline-flex items-center gap-2 text-[11px] font-medium text-[hsl(var(--muted-foreground))]">
+            <span className="live-dot inline-block size-1.5 rounded-full bg-[hsl(var(--signal))] text-[hsl(var(--signal))]" />
             AstraCode — Workspace
+          </span>
+          <span className="hidden rounded-full border border-[hsl(var(--border))] px-2 py-0.5 text-[9px] text-[hsl(var(--muted-foreground))] sm:inline">
+            live
           </span>
         </div>
 
@@ -153,8 +159,8 @@ function WorkspaceMock() {
             </div>
           </div>
 
-          <div className="flex min-h-[340px] flex-col">
-            <div className="flex-1 space-y-4 p-5 sm:p-6">
+          <div className="flex min-h-[340px] min-w-0 flex-col">
+            <div className="min-w-0 flex-1 space-y-4 p-5 sm:p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-[11.5px] font-medium">
                   <span className="flex size-6 items-center justify-center rounded-lg bg-[hsl(var(--signal))] text-[hsl(var(--signal-foreground))]">
@@ -205,75 +211,116 @@ function WorkspaceMock() {
           </div>
         </div>
       </div>
+      <div className="mock-chip -left-10 top-[36%] hidden xl:flex" style={{ animationDelay: "-2s" }}>
+        <span className="dot" />
+        <span>Streaming</span>
+        <strong>38 tok/s</strong>
+      </div>
+      <div className="mock-chip -right-10 top-[22%] hidden xl:flex" style={{ animationDelay: "-4s" }}>
+        <ShieldCheck className="size-3.5 text-[hsl(var(--signal))]" />
+        <span>Keys</span>
+        <strong>AES-256</strong>
+      </div>
+      <div className="mock-chip -left-12 bottom-[16%] hidden xl:flex" style={{ animationDelay: "-1s" }}>
+        <Sparkles className="size-3.5 text-[hsl(var(--violet))]" />
+        <span>Assistant</span>
+        <strong>ready</strong>
+      </div>
     </div>
   );
 }
 
 export default function LandingPage() {
   return (
-    <div className="min-h-dvh bg-[hsl(var(--background))]">
+    <div className="landing dark min-h-dvh bg-[hsl(var(--background))] text-[hsl(var(--foreground))]">
       <LandingHeader />
 
       <main>
-        <section className="relative overflow-hidden border-b border-[hsl(var(--border))] px-5 pb-16 pt-16 sm:px-8 sm:pb-20 sm:pt-24">
-          <div aria-hidden="true" className="grid-bg pointer-events-none absolute inset-0 opacity-60" />
+        <section className="relative isolate overflow-hidden border-b border-[hsl(var(--border))] px-5 pb-20 pt-16 sm:px-8 sm:pb-28 sm:pt-24">
+          <div aria-hidden="true" className="landing-aurora">
+            <span className="a1" />
+            <span className="a2" />
+            <span className="a3" />
+          </div>
+          <div aria-hidden="true" className="grid-bg pointer-events-none absolute inset-0 opacity-70" />
+          <div aria-hidden="true" className="landing-noise" />
+
           <div className="relative mx-auto max-w-[1120px] text-center">
-            <Eyebrow>Astra Assistant now included</Eyebrow>
-            <h1 className="mx-auto mt-6 max-w-4xl text-balance text-[40px] font-semibold leading-[1.03] tracking-[-0.055em] sm:text-[64px] lg:text-[76px]">
-              Build beyond limits,
-              <br />
-              <span className="bg-gradient-to-r from-[hsl(var(--foreground))] via-[hsl(var(--foreground))] to-[hsl(var(--signal))] bg-clip-text text-transparent">
-                with AI already inside.
-              </span>
+            <div className="hero-rise">
+              <Eyebrow>
+                <span className="text-[hsl(var(--signal))]">New</span> · Astra Assistant included free
+              </Eyebrow>
+            </div>
+
+            <h1 className="hero-rise mx-auto mt-7 max-w-4xl text-balance text-[44px] font-semibold leading-[0.98] tracking-[-0.06em] [animation-delay:90ms] sm:text-[72px] lg:text-[88px]">
+              <span className="block">Build at the speed</span>
+              <span className="hero-shine block pb-1">of thought.</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-xl text-pretty text-[15px] leading-relaxed text-[hsl(var(--muted-foreground))] sm:text-[16.5px]">
-              AstraCode is the open-source AI workspace for people who ship. Chat, edit, run and
-              benchmark in one place — with a built-in assistant, or the models you already use.
+
+            <p className="hero-rise mx-auto mt-6 max-w-xl text-pretty text-[15px] leading-relaxed text-[hsl(var(--muted-foreground))] [animation-delay:180ms] sm:text-[17px]">
+              The AI-native workspace for people who ship. Chat, code, run and benchmark in one
+              place — with a built-in assistant, or the models you already use.
             </p>
 
-            <div className="mt-8 flex flex-col items-center justify-center gap-2.5 sm:flex-row">
+            <div className="hero-rise mt-9 flex flex-col items-center justify-center gap-3 [animation-delay:260ms] sm:flex-row">
               <Link
                 href="/register"
-                className={cn(buttonVariants({ size: "lg" }), "group w-full justify-center sm:w-auto")}
+                className={cn(buttonVariants({ size: "lg" }), "cta-glow group h-12 w-full justify-center px-7 text-[14px] sm:w-auto")}
               >
                 Start building free
-                <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
               </Link>
-              <Link href="/docs" className={cn(buttonVariants({ variant: "secondary", size: "lg" }), "w-full justify-center sm:w-auto")}>
+              <Link
+                href="/docs"
+                className={cn(
+                  buttonVariants({ variant: "secondary", size: "lg" }),
+                  "h-12 w-full justify-center px-7 text-[14px] hover:bg-[hsl(var(--card))] sm:w-auto",
+                )}
+              >
                 Explore the docs
+                <ArrowUpRight className="size-4" />
               </Link>
             </div>
 
-            <p className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[12px] text-[hsl(var(--muted-foreground))]">
-              <span className="inline-flex items-center gap-1.5">
-                <Check className="size-3.5 text-[hsl(var(--success))]" />
-                No provider setup
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <Check className="size-3.5 text-[hsl(var(--success))]" />
-                Open source
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <Check className="size-3.5 text-[hsl(var(--success))]" />
-                Self-host ready
-              </span>
-            </p>
+            <div className="hero-rise mt-8 flex flex-wrap items-center justify-center gap-2 [animation-delay:340ms]">
+              {[
+                { label: "No provider setup", icon: Check },
+                { label: "Open source", icon: Code2 },
+                { label: "Self-host ready", icon: TerminalSquare },
+                { label: "SSE streaming", icon: Zap },
+              ].map(({ label, icon: Icon }) => (
+                <span
+                  key={label}
+                  className="inline-flex items-center gap-2 rounded-full border border-[hsl(var(--border))] bg-[hsl(var(--card))]/55 px-3 py-1.5 text-[11.5px] text-[hsl(var(--muted-foreground))] backdrop-blur-md"
+                >
+                  <Icon className="size-3.5 text-[hsl(var(--signal))]" />
+                  {label}
+                </span>
+              ))}
+            </div>
 
-            <WorkspaceMock />
+            <div className="hero-rise [animation-delay:420ms]">
+              <WorkspaceMock />
+            </div>
           </div>
         </section>
 
-        <section className="border-b border-[hsl(var(--border))] px-5 py-7 sm:px-8">
-          <div className="mx-auto flex max-w-[1120px] flex-col items-center justify-between gap-4 sm:flex-row">
-            <p className="text-[12px] font-medium text-[hsl(var(--muted-foreground))]">
-              Works with the models you already use
+        <section className="border-b border-[hsl(var(--border))] bg-[hsl(var(--card))]/30 px-5 py-6 sm:px-8">
+          <div className="mx-auto flex max-w-[1120px] flex-col items-center gap-3 sm:flex-row sm:gap-8">
+            <p className="shrink-0 text-[11px] font-medium uppercase tracking-[0.16em] text-[hsl(var(--muted-foreground))]">
+              Works with
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-              {providers.map((provider) => (
-                <span key={provider} className="text-[11.5px] font-medium text-[hsl(var(--muted-foreground))]/80">
-                  {provider}
-                </span>
-              ))}
+            <div className="landing-fade-x relative w-full overflow-hidden">
+              <div className="marquee-track flex w-max animate-marquee items-center gap-10 py-1">
+                {[...providers, ...providers].map((provider, index) => (
+                  <span
+                    key={`${provider}-${index}`}
+                    className="whitespace-nowrap text-[12px] font-medium text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--foreground))]"
+                  >
+                    {provider}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -320,7 +367,7 @@ export default function LandingPage() {
             <div className="relative">
               <div
                 aria-hidden="true"
-                className="absolute -inset-6 bg-[radial-gradient(ellipse_at_center,hsl(var(--signal))_0%,transparent_70%)] opacity-[0.08] blur-2xl"
+                className="absolute -inset-4 bg-[radial-gradient(ellipse_at_center,hsl(var(--signal))_0%,transparent_70%)] opacity-[0.08] blur-2xl sm:-inset-6"
               />
               <div className="relative grid gap-3">
                 <div className="rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-4 shadow-sm">

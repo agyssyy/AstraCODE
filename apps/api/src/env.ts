@@ -4,7 +4,23 @@ import { networkInterfaces } from "node:os";
 import { config as loadEnv } from "dotenv";
 import { z } from "zod";
 
-export const repoRoot = path.resolve(import.meta.dirname, "../../..");
+function findRepoRoot(): string {
+  let dir = process.cwd();
+  for (let depth = 0; depth < 6; depth += 1) {
+    if (
+      fs.existsSync(path.join(dir, "pnpm-workspace.yaml")) ||
+      fs.existsSync(path.join(dir, ".env"))
+    ) {
+      return dir;
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return process.cwd();
+}
+
+export const repoRoot = process.env.ASTRACODE_REPO_ROOT || findRepoRoot();
 const envFile = path.join(repoRoot, ".env");
 if (fs.existsSync(envFile)) {
   loadEnv({ path: envFile });

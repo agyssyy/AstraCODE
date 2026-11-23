@@ -5,7 +5,6 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Menu, X } from "lucide-react";
 import { buttonVariants, cn } from "@astracode/ui";
 import { Logo } from "@/components/brand/logo";
-import { ThemeToggle } from "@/components/shell/theme-toggle";
 
 const links = [
   { href: "#assistant", label: "Assistant" },
@@ -51,7 +50,6 @@ export function LandingHeader() {
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-1.5">
-          <ThemeToggle sync={false} />
           <Link
             href="/login"
             className="hidden rounded-lg px-2.5 py-1.5 text-[12.5px] font-medium text-[hsl(var(--muted-foreground))] transition-colors hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))] sm:inline"
@@ -84,7 +82,7 @@ export function LandingHeader() {
             className="absolute inset-0 animate-[fade-in_160ms_ease-out_both] bg-black/40 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute inset-y-0 right-0 flex w-[min(20rem,88vw)] animate-[slide-in-right_260ms_cubic-bezier(0.16,1,0.3,1)_both] flex-col border-l border-[hsl(var(--border))] bg-[hsl(var(--background))] shadow-2xl">
+          <div className="absolute inset-y-0 right-0 flex w-full animate-[slide-in-right_260ms_cubic-bezier(0.16,1,0.3,1)_both] flex-col bg-[hsl(var(--background))] shadow-2xl sm:w-[min(20rem,88vw)] sm:border-l sm:border-[hsl(var(--border))]">
             <div className="flex items-center justify-between border-b border-[hsl(var(--border))] px-5 py-4">
               <p className="text-[12px] font-semibold">Menu</p>
               <button

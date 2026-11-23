@@ -19,6 +19,7 @@ export const users = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     email: varchar("email", { length: 320 }).notNull().unique(),
     name: varchar("name", { length: 100 }).notNull(),
+    username: varchar("username", { length: 40 }).unique(),
     passwordHash: text("password_hash").notNull(),
     twoFactorEnabled: boolean("two_factor_enabled").notNull().default(false),
     twoFactorEmail: varchar("two_factor_email", { length: 320 }),

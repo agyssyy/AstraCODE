@@ -3,7 +3,19 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, ArrowRight, LoaderCircle, MailCheck } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  AtSign,
+  Eye,
+  EyeOff,
+  LoaderCircle,
+  Lock,
+  Mail,
+  MailCheck,
+  User,
+} from "lucide-react";
 import { Button, Field, Input } from "@astracode/ui";
 import { loginSchema, registerSchema } from "@astracode/shared";
 import { api, errorMessage } from "@/lib/api";
@@ -13,6 +25,53 @@ type LoginResult = {
   challengeId?: string;
   email?: string;
 };
+
+type GoogleTokenResponse = {
+  access_token?: string;
+  error?: string;
+  error_description?: string;
+};
+
+type GoogleTokenClient = {
+  requestAccessToken: (options?: { prompt?: string }) => void;
+};
+
+declare global {
+  interface Window {
+    google?: {
+      accounts?: {
+        oauth2?: {
+          initTokenClient: (config: {
+            client_id: string;
+            scope: string;
+            callback: (response: GoogleTokenResponse) => void;
+          }) => GoogleTokenClient;
+        };
+      };
+    };
+  }
+}
+
+function loadGoogleScript(): Promise<void> {
+  if (window.google?.accounts?.oauth2) return Promise.resolve();
+  const existing = document.getElementById("google-gsi") as HTMLScriptElement | null;
+  if (existing) {
+    return new Promise((resolve, reject) => {
+      existing.addEventListener("load", () => resolve());
+      existing.addEventListener("error", () => reject(new Error("Could not load Google sign-in.")));
+    });
+  }
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.id = "google-gsi";
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Could not load Google sign-in."));
+    document.head.appendChild(script);
+  });
+}
 
 function GoogleMark() {
   return (
@@ -43,8 +102,12 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
   const [pending, setPending] = React.useState(false);
   const [error, setError] = React.useState<string | null>(() => params.get("error"));
   const [googleEnabled, setGoogleEnabled] = React.useState(false);
+  const [googleClientId, setGoogleClientId] = React.useState("");
+  const [googlePending, setGooglePending] = React.useState(false);
+  const googleTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const [fields, setFields] = React.useState({
     name: "",
+    username: "",
     email: "",
     password: "",
   });
@@ -58,16 +121,22 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
   );
   const [code, setCode] = React.useState("");
   const [cooldown, setCooldown] = React.useState(0);
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const nextParam = params.get("next");
-  const next = nextParam && nextParam.startsWith("/") ? nextParam : "/dashboard";
+  const next =
+    nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") && !nextParam.startsWith("/\\")
+      ? nextParam
+      : "/dashboard";
 
   React.useEffect(() => {
     let active = true;
     api
-      .get<{ googleEnabled?: boolean }>("/auth/config")
+      .get<{ googleEnabled?: boolean; googleClientId?: string }>("/auth/config")
       .then((config) => {
-        if (active) setGoogleEnabled(Boolean(config.googleEnabled));
+        if (!active) return;
+        setGoogleEnabled(Boolean(config.googleEnabled));
+        setGoogleClientId(config.googleClientId ?? "");
       })
       .catch(() => {
         /* Google is optional; keep the password form working. */
@@ -88,6 +157,69 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
     router.refresh();
   };
 
+  const clearGoogleTimer = () => {
+    if (googleTimer.current) {
+      clearTimeout(googleTimer.current);
+      googleTimer.current = null;
+    }
+  };
+
+  React.useEffect(() => () => clearGoogleTimer(), []);
+
+  const completeGoogle = async (response: GoogleTokenResponse) => {
+    clearGoogleTimer();
+    if (!response.access_token) {
+      setError(response.error_description || "Google sign-in was cancelled.");
+      setGooglePending(false);
+      return;
+    }
+    try {
+      const result = await api.post<LoginResult>("/auth/google/token", {
+        accessToken: response.access_token,
+      });
+      if (result.twoFactorRequired && result.challengeId) {
+        setChallenge({ id: result.challengeId, email: result.email ?? "" });
+        setStage("code");
+        setCode("");
+        setCooldown(30);
+        setGooglePending(false);
+        return;
+      }
+      finish();
+    } catch (err) {
+      setError(errorMessage(err));
+      setGooglePending(false);
+    }
+  };
+
+  const onGoogle = async () => {
+    setError(null);
+    setGooglePending(true);
+    try {
+      await loadGoogleScript();
+      const oauth2 = window.google?.accounts?.oauth2;
+      if (!oauth2 || !googleClientId) {
+        throw new Error("Google sign-in is not configured. Add the site as an authorized origin in Google Cloud.");
+      }
+      const client = oauth2.initTokenClient({
+        client_id: googleClientId,
+        scope: "openid email profile",
+        callback: (response) => {
+          void completeGoogle(response);
+        },
+      });
+      googleTimer.current = setTimeout(() => {
+        setGooglePending(false);
+        setError("Google sign-in timed out. Close any blocked popup and try again.");
+      }, 90_000);
+      client.requestAccessToken({ prompt: "select_account" });
+    } catch (err) {
+      clearGoogleTimer();
+      setError(errorMessage(err));
+      setGooglePending(false);
+    }
+  };
+
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
@@ -99,7 +231,12 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
     }
     setPending(true);
     try {
-      const data = parsed.data as { name?: string; email: string; password: string };
+      const data = parsed.data as {
+        name?: string;
+        username?: string;
+        email: string;
+        password: string;
+      };
       const result =
         mode === "login"
           ? await api.post<LoginResult>("/auth/login", {
@@ -108,6 +245,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
             })
           : await api.post<LoginResult>("/auth/register", {
               name: data.name ?? "",
+              username: data.username || undefined,
               email: data.email,
               password: data.password,
             });
@@ -267,15 +405,17 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
           : "Astra Assistant is ready as soon as you are. No provider setup required."}
       </p>
 
-      {googleEnabled ? (
+      {googleEnabled && googleClientId ? (
         <div className="mt-7">
-          <a
-            href={`/backend/auth/google/start?next=${encodeURIComponent(next)}`}
-            className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[12.5px] font-medium transition-colors hover:bg-[hsl(var(--muted))]"
+          <button
+            type="button"
+            onClick={onGoogle}
+            disabled={googlePending}
+            className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[12.5px] font-medium transition-colors hover:bg-[hsl(var(--muted))] disabled:opacity-60"
           >
-            <GoogleMark />
+            {googlePending ? <LoaderCircle className="size-4 animate-spin" /> : <GoogleMark />}
             Continue with Google
-          </a>
+          </button>
           <p className="mt-2 text-center text-[10.5px] text-[hsl(var(--muted-foreground))]">
             First Google sign-in creates the workspace automatically.
           </p>
@@ -291,45 +431,85 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
 
       <form onSubmit={onSubmit} className={googleEnabled ? "space-y-5" : "mt-8 space-y-5"} noValidate>
         {mode === "register" ? (
-          <Field label="Name" htmlFor="name">
-            <Input
-              id="name"
-              name="name"
-              autoComplete="name"
-              placeholder="Ada Lovelace"
-              value={fields.name}
-              onChange={(e) => setFields((f) => ({ ...f, name: e.target.value }))}
-              required
-            />
-          </Field>
+          <>
+            <Field label="Name" htmlFor="name">
+              <div className="relative">
+                <User className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
+                <Input
+                  id="name"
+                  name="name"
+                  autoComplete="name"
+                  placeholder="Ada Lovelace"
+                  value={fields.name}
+                  onChange={(e) => setFields((f) => ({ ...f, name: e.target.value }))}
+                  className="h-12 rounded-xl border-[hsl(var(--border))] bg-[hsl(var(--muted))]/45 pl-10 shadow-xs"
+                  required
+                />
+              </div>
+            </Field>
+            <Field
+              label="Username"
+              htmlFor="username"
+              hint="Optional · letters, numbers and underscores."
+            >
+              <div className="relative">
+                <AtSign className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
+                <Input
+                  id="username"
+                  name="username"
+                  autoComplete="username"
+                  placeholder="ada_lovelace"
+                  value={fields.username}
+                  onChange={(e) => setFields((f) => ({ ...f, username: e.target.value }))}
+                  className="h-12 rounded-xl border-[hsl(var(--border))] bg-[hsl(var(--muted))]/45 pl-10 shadow-xs"
+                />
+              </div>
+            </Field>
+          </>
         ) : null}
         <Field label="Email" htmlFor="email">
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            placeholder="you@example.com"
-            value={fields.email}
-            onChange={(e) => setFields((f) => ({ ...f, email: e.target.value }))}
-            required
-          />
+          <div className="relative">
+            <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              value={fields.email}
+              onChange={(e) => setFields((f) => ({ ...f, email: e.target.value }))}
+              className="h-12 rounded-xl border-[hsl(var(--border))] bg-[hsl(var(--muted))]/45 pl-10 shadow-xs"
+              required
+            />
+          </div>
         </Field>
         <Field
           label="Password"
           htmlFor="password"
           hint={mode === "register" ? "At least 10 characters." : undefined}
         >
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete={mode === "login" ? "current-password" : "new-password"}
-            placeholder="••••••••••"
-            value={fields.password}
-            onChange={(e) => setFields((f) => ({ ...f, password: e.target.value }))}
-            required
-          />
+          <div className="relative">
+            <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
+            <Input
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              autoComplete={mode === "login" ? "current-password" : "new-password"}
+              placeholder="••••••••••"
+              value={fields.password}
+              onChange={(e) => setFields((f) => ({ ...f, password: e.target.value }))}
+              className="h-12 rounded-xl border-[hsl(var(--border))] bg-[hsl(var(--muted))]/45 pl-10 pr-11 shadow-xs"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((value) => !value)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              className="absolute right-1.5 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-lg text-[hsl(var(--muted-foreground))] transition-colors hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))]"
+            >
+              {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+            </button>
+          </div>
         </Field>
 
         {mode === "login" ? (
@@ -346,13 +526,19 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
         {error ? (
           <div
             role="alert"
-            className="border-l-2 border-[hsl(var(--destructive))] bg-[hsl(var(--destructive))]/8 px-3 py-2.5 font-mono text-[11px] leading-relaxed text-[hsl(var(--destructive))]"
+            className="flex items-start gap-2.5 rounded-xl border border-[hsl(var(--destructive))]/25 bg-[hsl(var(--destructive))]/8 px-3.5 py-3 text-[12px] leading-relaxed text-[hsl(var(--destructive))]"
           >
-            {error}
+            <AlertCircle className="mt-0.5 size-4 shrink-0" />
+            <span>{error}</span>
           </div>
         ) : null}
 
-        <Button type="submit" className="h-11 w-full" size="lg" disabled={pending}>
+        <Button
+          type="submit"
+          className="h-12 w-full rounded-xl bg-[linear-gradient(135deg,hsl(var(--primary)),hsl(var(--violet)))] shadow-[0_16px_40px_-18px_hsl(var(--primary)/0.9)]"
+          size="lg"
+          disabled={pending}
+        >
           {pending ? (
             <LoaderCircle className="size-4 animate-spin" />
           ) : (

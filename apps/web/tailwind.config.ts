@@ -6,7 +6,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["IBM Plex Sans Variable", "IBM Plex Sans", "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ["Plus Jakarta Sans Variable", "Plus Jakarta Sans", "ui-sans-serif", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       colors: {

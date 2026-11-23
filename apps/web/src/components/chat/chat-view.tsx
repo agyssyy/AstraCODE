@@ -470,7 +470,7 @@ export function ChatView() {
         <div className="border-t border-[hsl(var(--border))] p-2">
           <Link
             href="/models"
-            className="flex items-center gap-2 rounded-md px-2 py-2 text-[12px] text-[hsl(var(--muted-foreground))] transition-colors hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))]"
+            className="flex items-center gap-2 rounded-xl px-2.5 py-2 text-[12px] text-[hsl(var(--muted-foreground))] transition-colors hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))]"
           >
             <Zap className="size-3.5" />
             {models.length > 0 ? `${models.length} model${models.length === 1 ? "" : "s"} ready` : "Add a model"}
@@ -527,7 +527,7 @@ export function ChatView() {
 
           <div className="ml-auto flex items-center gap-2">
             <Tooltip content="Agent mode can propose file edits. Nothing is written until you approve.">
-              <label className="flex cursor-pointer items-center gap-1.5 border border-[hsl(var(--border))] px-1.5 py-1.5 transition-colors hover:border-[hsl(var(--signal))]/40 sm:px-2">
+              <label className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-[hsl(var(--border))] px-2 py-1.5 transition-colors hover:border-[hsl(var(--signal))]/40">
                 <Bot className="size-3.5 text-[hsl(var(--muted-foreground))]" />
                 <span className="hidden text-[11.5px] sm:inline">Agent</span>
                 <Switch
@@ -580,7 +580,7 @@ export function ChatView() {
                 </span>
               </div>
               <div className="mt-6 flex animate-fade-up items-start gap-3 sm:mt-10 sm:gap-4">
-                <div className="mt-1 flex size-11 shrink-0 items-center justify-center border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-xs">
+                <div className="mt-1 flex size-11 shrink-0 items-center justify-center rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-xs">
                   <AstraMark className="size-5" />
                 </div>
                 <div className="min-w-0">
@@ -595,7 +595,7 @@ export function ChatView() {
 
               {composerDisabled ? (
                 <div className="mt-6 w-full animate-fade-up space-y-3 [animation-delay:90ms] sm:mt-8">
-                  <div className="relative overflow-hidden border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
+                  <div className="relative overflow-hidden rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-xs">
                     <span aria-hidden="true" className="absolute inset-y-0 left-0 w-[3px] bg-[hsl(var(--signal))]" />
                     <div className="p-4 pl-5 sm:p-5 sm:pl-6">
                       <p className="flex items-center gap-2 font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-[hsl(var(--muted-foreground))]">
@@ -608,7 +608,7 @@ export function ChatView() {
                       </p>
                       <div className="mt-3 flex flex-wrap gap-1.5">
                         {["Groq", "OpenRouter", "Ollama", "Custom"].map((provider) => (
-                          <span key={provider} className="border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-2 py-1 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[hsl(var(--muted-foreground))]">
+                          <span key={provider} className="rounded-md border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-2 py-1 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[hsl(var(--muted-foreground))]">
                             {provider}
                           </span>
                         ))}
@@ -623,7 +623,7 @@ export function ChatView() {
                       </div>
                     </div>
                   </div>
-                  <div className="grid grid-cols-3 gap-px border border-[hsl(var(--border))] bg-[hsl(var(--border))]">
+                  <div className="grid grid-cols-3 gap-1.5 overflow-hidden rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--muted))]/40 p-1.5">
                     {[
                       { title: "Stream", detail: "SSE replies", icon: Zap },
                       { title: "Edit", detail: "Project files", icon: Code2 },
@@ -649,7 +649,7 @@ export function ChatView() {
                         setInput(suggestion.prompt);
                         textareaRef.current?.focus();
                       }}
-                      className="group grid grid-cols-[34px_1fr] border border-[hsl(var(--border))] bg-[hsl(var(--card))] text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-[hsl(var(--signal))]/60 hover:bg-[hsl(var(--muted))]/30"
+                      className="group grid grid-cols-[34px_1fr] rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-1 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-[hsl(var(--signal))]/60 hover:bg-[hsl(var(--muted))]/30"
                     >
                       <span className="flex items-start justify-center border-r border-[hsl(var(--border))] pt-3 font-mono text-[10px] text-[hsl(var(--muted-foreground))] transition-colors group-hover:text-[hsl(var(--signal))]">
                         {String(index + 1).padStart(2, "0")}
@@ -678,7 +678,7 @@ export function ChatView() {
                           setSystemPrompt(preset.prompt);
                           toast.success(`Preset applied: ${preset.title}`);
                         }}
-                        className="border border-[hsl(var(--border))] bg-transparent px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.08em] text-[hsl(var(--muted-foreground))] transition-colors hover:border-[hsl(var(--signal))]/50 hover:text-[hsl(var(--foreground))]"
+                        className="rounded-lg border border-[hsl(var(--border))] bg-transparent px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.08em] text-[hsl(var(--muted-foreground))] transition-colors hover:border-[hsl(var(--signal))]/50 hover:text-[hsl(var(--foreground))]"
                       >
                         {preset.title}
                       </button>
@@ -718,7 +718,7 @@ export function ChatView() {
 
                 {streaming || pendingActions.length > 0 ? (
                   <div className="flex gap-3">
-                    <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
+                    <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
                       <AstraMark className="size-4" />
                     </span>
                     <div className="min-w-0 flex-1">
@@ -775,7 +775,7 @@ export function ChatView() {
                 Agent mode · file changes require your approval
               </div>
             ) : null}
-            <div className="border border-[hsl(var(--border))] bg-[hsl(var(--card))] transition-colors focus-within:border-[hsl(var(--signal))]/60">
+            <div className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-[0_18px_44px_-32px_hsl(var(--signal)/0.45)] transition-colors focus-within:border-[hsl(var(--signal))]/60">
               <Textarea
                 ref={textareaRef}
                 value={input}
@@ -854,7 +854,7 @@ export function ChatView() {
                     key={preset.id}
                     type="button"
                     onClick={() => setPromptDraft(preset.prompt)}
-                    className="border border-[hsl(var(--border))] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.08em] transition-colors hover:border-[hsl(var(--signal))]/50 hover:bg-[hsl(var(--muted))]"
+                    className="rounded-lg border border-[hsl(var(--border))] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.08em] transition-colors hover:border-[hsl(var(--signal))]/50 hover:bg-[hsl(var(--muted))]"
                   >
                     {preset.title}
                   </button>
@@ -950,7 +950,7 @@ function MessageItem({
           <div className="max-w-full border border-[hsl(var(--signal))]/35 bg-[hsl(var(--signal))]/[0.07] px-3.5 py-2.5 text-[13px] leading-relaxed">
             <p className="whitespace-pre-wrap">{message.content}</p>
           </div>
-          <span className="mt-0.5 hidden size-7 shrink-0 items-center justify-center border border-[hsl(var(--border))] bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] sm:flex">
+          <span className="mt-0.5 hidden size-7 shrink-0 items-center justify-center rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] sm:flex">
             <User className="size-3.5" />
           </span>
         </div>
@@ -960,7 +960,7 @@ function MessageItem({
 
   return (
     <div className="flex gap-3">
-      <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
+      <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
         <AstraMark className="size-4" />
       </span>
       <div className="min-w-0 flex-1">

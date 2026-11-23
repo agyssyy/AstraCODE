@@ -204,9 +204,123 @@ function readOAuthCookie(request: FastifyRequest): OAuthCookie | null {
 
 export async function authRoutes(app: FastifyInstance): Promise<void> {
   app.get("/auth/config", async () => ({
-    googleEnabled: google.configured,
+    googleEnabled: Boolean(google.clientId),
+    googleClientId: google.clientId,
     emailCodeRequired: env.emailCodeRequired,
   }));
+
+  app.post(
+    "/auth/google/token",
+    { config: { rateLimit: { max: 10, timeWindow: "1 minute" } } },
+    async (request, reply) => {
+      const body = (request.body ?? {}) as { accessToken?: unknown };
+      const accessToken = typeof body.accessToken === "string" ? body.accessToken.trim() : "";
+      if (!accessToken || !google.clientId) {
+        throw badRequest("Google sign-in is not configured on this server.");
+      }
+
+      const infoResponse = await fetch(
+        `https://oauth2.googleapis.com/tokeninfo?access_token=${encodeURIComponent(accessToken)}`,
+      );
+      const profile = (await infoResponse.json()) as {
+        aud?: string;
+        sub?: string;
+        email?: string;
+        email_verified?: string | boolean;
+        name?: string;
+      };
+      const verified =
+        profile.email_verified === true || profile.email_verified === "true";
+      if (
+        !infoResponse.ok ||
+        !profile.sub ||
+        !profile.email ||
+        !verified ||
+        (profile.aud && profile.aud !== google.clientId)
+      ) {
+        throw unauthorized("Google did not confirm a verified email for this account.");
+      }
+
+      const email = profile.email.toLowerCase();
+      const linkRows = await app.db
+        .select()
+        .from(oauthAccounts)
+        .where(
+          and(
+            eq(oauthAccounts.provider, "google"),
+            eq(oauthAccounts.providerAccountId, profile.sub),
+          ),
+        )
+        .limit(1);
+      let user = linkRows[0]
+        ? (
+            await app.db
+              .select()
+              .from(users)
+              .where(eq(users.id, linkRows[0].userId))
+              .limit(1)
+          )[0]
+        : undefined;
+
+      if (!user) {
+        const emailRows = await app.db
+          .select()
+          .from(users)
+          .where(eq(users.email, email))
+          .limit(1);
+        user = emailRows[0];
+      }
+
+      if (!user) {
+        const created = await app.db
+          .insert(users)
+          .values({
+            name: (profile.name || email.split("@")[0] || "Astra user").slice(0, 100),
+            email,
+            passwordHash: hashPassword(randomBytes(32).toString("hex")),
+            emailVerifiedAt: new Date(),
+          })
+          .returning();
+        user = created[0]!;
+      } else if (!user.emailVerifiedAt) {
+        await app.db
+          .update(users)
+          .set({
+            passwordHash: hashPassword(randomBytes(32).toString("hex")),
+            emailVerifiedAt: new Date(),
+            updatedAt: new Date(),
+          })
+          .where(eq(users.id, user.id));
+      }
+
+      if (!linkRows[0]) {
+        await app.db
+          .insert(oauthAccounts)
+          .values({
+            userId: user.id,
+            provider: "google",
+            providerAccountId: profile.sub,
+            email,
+          })
+          .onConflictDoNothing();
+      }
+
+      await ensureSettings(app.db, user.id);
+
+      if (env.emailCodeRequired || user.twoFactorEnabled) {
+        const challenge = await startEmailChallenge(app, user);
+        return {
+          twoFactorRequired: true,
+          challengeId: challenge.challengeId,
+          email: challenge.email,
+        };
+      }
+
+      const { token, expiresAt } = await createSession(app.db, user.id, request);
+      setSessionCookie(reply, token, expiresAt);
+      return { ok: true };
+    },
+  );
 
   app.post(
     "/auth/register",
@@ -220,6 +334,17 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
         .limit(1);
       const existingUser = existing[0];
 
+      if (body.username) {
+        const usernameTaken = await app.db
+          .select({ id: users.id })
+          .from(users)
+          .where(eq(users.username, body.username))
+          .limit(1);
+        if (usernameTaken[0] && usernameTaken[0].id !== existingUser?.id) {
+          throw conflict("That username is already taken. Pick another one.");
+        }
+      }
+
       let user;
       if (existingUser) {
         if (existingUser.emailVerifiedAt) {
@@ -229,6 +354,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
           .update(users)
           .set({
             name: body.name,
+            username: body.username ?? null,
             passwordHash: hashPassword(body.password),
             updatedAt: new Date(),
           })
@@ -244,6 +370,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
           .insert(users)
           .values({
             name: body.name,
+            username: body.username ?? null,
             email: body.email,
             passwordHash: hashPassword(body.password),
           })
@@ -305,26 +432,35 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
       const user = found[0];
 
       if (user) {
-        const origin = externalOrigin(request);
+        const origin = env.webOrigin || externalOrigin(request);
         const token = randomBytes(32).toString("base64url");
+        const now = new Date();
         await app.db
           .delete(passwordResetTokens)
-          .where(eq(passwordResetTokens.userId, user.id));
+          .where(
+            and(
+              eq(passwordResetTokens.userId, user.id),
+              lt(passwordResetTokens.expiresAt, now),
+            ),
+          );
         await app.db.insert(passwordResetTokens).values({
           userId: user.id,
           tokenHash: sha256(token),
-          expiresAt: new Date(Date.now() + PASSWORD_RESET_TTL_MS),
+          expiresAt: new Date(now.getTime() + PASSWORD_RESET_TTL_MS),
         });
 
-        const delivery = deliveryFor(user, user.email);
-        if (delivery) {
-          const resetUrl = `${origin}/reset-password?token=${encodeURIComponent(token)}`;
-          try {
-            await sendPasswordReset(delivery, resetUrl, 30);
-          } catch (error) {
-            request.log.warn({ err: error }, "Could not send password reset email");
-          }
-        } else {
+        const resetUrl = `${origin}/reset-password?token=${encodeURIComponent(token)}`;
+        const recipients = [...new Set([user.email, user.twoFactorEmail].filter((value): value is string => Boolean(value)))];
+        let queued = 0;
+        for (const to of recipients) {
+          const delivery = deliveryFor(user, to);
+          if (!delivery) continue;
+          queued += 1;
+          void sendPasswordReset(delivery, resetUrl, 30).catch((error) => {
+            request.log.warn({ err: error, to }, "Could not send password reset email");
+          });
+        }
+        if (queued === 0) {
           request.log.warn("Password reset requested but email delivery is not configured");
         }
       }

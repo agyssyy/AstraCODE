@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ["@astracode/ui", "@astracode/shared"],
   eslint: { ignoreDuringBuilds: true },
@@ -11,10 +10,6 @@ const nextConfig: NextConfig = {
       ".cjs": [".cts", ".cjs"],
     };
     return config;
-  },
-  async rewrites() {
-    const api = (process.env.API_INTERNAL_URL ?? "http://127.0.0.1:4000").replace(/\/+$/, "");
-    return [{ source: "/backend/:path*", destination: `${api}/:path*` }];
   },
   async headers() {
     return [
@@ -29,5 +24,4 @@ const nextConfig: NextConfig = {
     ];
   },
 };
-
 export default nextConfig;

@@ -36,6 +36,13 @@
       "when": 1795219724093,
       "tag": "0004_first_moondragon",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795269161747,
+      "tag": "0005_odd_starjammers",
+      "breakpoints": true
     }
   ]
 }

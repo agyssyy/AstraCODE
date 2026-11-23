@@ -374,7 +374,7 @@ export function ModelsView() {
             <button
               type="button"
               onClick={() => openCreateProvider(preset)}
-              className="group flex items-center gap-1.5 border border-[hsl(var(--border))] bg-[hsl(var(--card))] px-2.5 py-1.5 font-mono text-[10px] font-medium uppercase tracking-[0.06em] text-[hsl(var(--muted-foreground))] transition-all duration-200 hover:-translate-y-px hover:border-[hsl(var(--signal))]/60 hover:text-[hsl(var(--foreground))]"
+              className="group flex items-center gap-1.5 rounded-full border border-[hsl(var(--border))] bg-[hsl(var(--card))] px-3 py-1.5 font-mono text-[10px] font-medium uppercase tracking-[0.06em] text-[hsl(var(--muted-foreground))] transition-all duration-200 hover:-translate-y-px hover:border-[hsl(var(--signal))]/60 hover:text-[hsl(var(--foreground))]"
             >
               <span className="size-1 bg-[hsl(var(--signal))]/60 transition-colors group-hover:bg-[hsl(var(--signal))]" />
               {preset.label}
@@ -409,7 +409,7 @@ export function ModelsView() {
                 </Button>
               }
             >
-              <div className="mt-8 grid w-full max-w-3xl gap-px border border-[hsl(var(--border))] bg-[hsl(var(--border))] text-left sm:grid-cols-3">
+              <div className="mt-8 grid w-full max-w-3xl gap-px overflow-hidden rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--border))] text-left sm:grid-cols-3">
                 {[
                   { icon: KeyRound, step: "01", title: "Connect a provider", detail: "A compatible URL and key." },
                   { icon: CloudDownload, step: "02", title: "Discover models", detail: "Pull the provider catalogue." },
@@ -542,7 +542,7 @@ export function ModelsView() {
             />
           </Card>
         ) : (
-          <Card>
+          <Card className="overflow-hidden rounded-2xl">
             <div className="hidden grid-cols-[1.4fr_1fr_0.7fr_0.7fr_auto] gap-3 border-b border-[hsl(var(--border))] px-4 py-2 text-[10.5px] font-semibold uppercase tracking-wider text-[hsl(var(--muted-foreground))] md:grid">
               <span>Model</span>
               <span>Provider</span>

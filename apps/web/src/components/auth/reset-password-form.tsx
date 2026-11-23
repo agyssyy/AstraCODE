@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Check, LoaderCircle, ShieldCheck } from "lucide-react";
+import { AlertCircle, Check, Eye, EyeOff, LoaderCircle, Lock, ShieldCheck } from "lucide-react";
 import { Button, Field, Input } from "@astracode/ui";
 import { passwordSchema } from "@astracode/shared";
 import { api, errorMessage } from "@/lib/api";
@@ -16,6 +16,7 @@ export function ResetPasswordForm() {
   const [pending, setPending] = React.useState(false);
   const [done, setDone] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -93,40 +94,57 @@ export function ResetPasswordForm() {
 
       <form onSubmit={onSubmit} className="mt-8 space-y-5" noValidate>
         <Field label="New password" htmlFor="password">
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="new-password"
-            placeholder="••••••••••"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            required
-          />
+          <div className="relative">
+            <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
+            <Input
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              autoComplete="new-password"
+              placeholder="••••••••••"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              className="h-12 rounded-xl border-[hsl(var(--border))] bg-[hsl(var(--muted))]/45 pl-10 pr-11 shadow-xs"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((value) => !value)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              className="absolute right-1.5 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-lg text-[hsl(var(--muted-foreground))] transition-colors hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))]"
+            >
+              {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+            </button>
+          </div>
         </Field>
         <Field label="Confirm password" htmlFor="confirm">
-          <Input
-            id="confirm"
-            name="confirm"
-            type="password"
-            autoComplete="new-password"
-            placeholder="••••••••••"
-            value={confirm}
-            onChange={(event) => setConfirm(event.target.value)}
-            required
-          />
+          <div className="relative">
+            <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
+            <Input
+              id="confirm"
+              name="confirm"
+              type={showPassword ? "text" : "password"}
+              autoComplete="new-password"
+              placeholder="••••••••••"
+              value={confirm}
+              onChange={(event) => setConfirm(event.target.value)}
+              className="h-12 rounded-xl border-[hsl(var(--border))] bg-[hsl(var(--muted))]/45 pl-10 shadow-xs"
+              required
+            />
+          </div>
         </Field>
 
         {error ? (
           <div
             role="alert"
-            className="border-l-2 border-[hsl(var(--destructive))] bg-[hsl(var(--destructive))]/8 px-3 py-2.5 font-mono text-[11px] leading-relaxed text-[hsl(var(--destructive))]"
+            className="flex items-start gap-2.5 rounded-xl border border-[hsl(var(--destructive))]/25 bg-[hsl(var(--destructive))]/8 px-3.5 py-3 text-[12px] leading-relaxed text-[hsl(var(--destructive))]"
           >
-            {error}
+            <AlertCircle className="mt-0.5 size-4 shrink-0" />
+            <span>{error}</span>
           </div>
         ) : null}
 
-        <Button type="submit" className="h-11 w-full" size="lg" disabled={pending || !token}>
+        <Button type="submit" className="h-12 w-full rounded-xl bg-[linear-gradient(135deg,hsl(var(--primary)),hsl(var(--violet)))] shadow-[0_16px_40px_-18px_hsl(var(--primary)/0.9)]" size="lg" disabled={pending || !token}>
           {pending ? (
             <LoaderCircle className="size-4 animate-spin" />
           ) : (

@@ -16,6 +16,18 @@ export const passwordSchema = z
 
 export const registerSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(80),
+  username: z.preprocess(
+    (value) =>
+      typeof value === "string" && value.trim() === "" ? undefined : value,
+    z
+      .string()
+      .trim()
+      .min(2, "Username must be at least 2 characters")
+      .max(40)
+      .regex(/^[a-z0-9_]+$/i, "Use letters, numbers and underscores only")
+      .transform((value) => value.toLowerCase())
+      .optional(),
+  ),
   email: emailSchema,
   password: passwordSchema,
 });

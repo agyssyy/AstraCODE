@@ -166,7 +166,7 @@ export default async function DashboardPage() {
         </div>
       </header>
 
-      <section aria-label="Workspace overview" className="stagger-fade border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
+      <section aria-label="Workspace overview" className="stagger-fade overflow-hidden rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-[0_1px_2px_rgb(0_0_0/0.04),0_18px_40px_-30px_rgb(0_0_0/0.25)]">
         <div className="flex items-center justify-between border-b border-[hsl(var(--border))] px-4 py-2">
           <p className="font-mono text-[8.5px] uppercase tracking-[0.16em] text-[hsl(var(--muted-foreground))]">
             SYSTEM / OVERVIEW
@@ -217,8 +217,8 @@ export default async function DashboardPage() {
       </section>
 
       <div className="stagger-fade grid gap-6 xl:grid-cols-[1.55fr_1fr]">
-        <div className="space-y-6">
-          <section className="border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
+        <div className="min-w-0 space-y-6">
+          <section className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-[0_1px_2px_rgb(0_0_0/0.04),0_18px_40px_-32px_rgb(0_0_0/0.22)]">
             <PanelHeader
               label="PROJECTS / RECENT"
               action={
@@ -243,7 +243,7 @@ export default async function DashboardPage() {
                       <span className="w-5 shrink-0 font-mono text-[9px] text-[hsl(var(--muted-foreground))]/60">
                         {String(index + 1).padStart(2, "0")}
                       </span>
-                      <span className="flex size-7 shrink-0 items-center justify-center border border-[hsl(var(--border))] bg-[hsl(var(--background))] text-[hsl(var(--muted-foreground))] transition-colors group-hover:text-[hsl(var(--signal))]">
+                      <span className="flex size-7 shrink-0 items-center justify-center rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] text-[hsl(var(--muted-foreground))] transition-colors group-hover:border-[hsl(var(--signal))]/40 group-hover:text-[hsl(var(--signal))]">
                         <Code2 className="size-3.5" />
                       </span>
                       <span className="min-w-0 flex-1">
@@ -252,7 +252,7 @@ export default async function DashboardPage() {
                           {project.fileCount} files · {timeAgo(project.updatedAt)}
                         </span>
                       </span>
-                      <span className="hidden border border-[hsl(var(--border))] px-1.5 py-0.5 font-mono text-[8.5px] uppercase tracking-[0.06em] text-[hsl(var(--muted-foreground))] sm:inline">
+                      <span className="hidden rounded-md border border-[hsl(var(--border))] px-1.5 py-0.5 font-mono text-[8.5px] uppercase tracking-[0.06em] text-[hsl(var(--muted-foreground))] sm:inline">
                         {project.language}
                       </span>
                       <ArrowUpRight className="size-3.5 text-[hsl(var(--muted-foreground))] opacity-0 transition-opacity group-hover:opacity-100" />
@@ -277,7 +277,7 @@ export default async function DashboardPage() {
             )}
           </section>
 
-          <section className="border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
+          <section className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-[0_1px_2px_rgb(0_0_0/0.04),0_18px_40px_-32px_rgb(0_0_0/0.22)]">
             <PanelHeader
               label="ASTRA / THREADS"
               action={
@@ -329,8 +329,8 @@ export default async function DashboardPage() {
           </section>
         </div>
 
-        <div className="space-y-6">
-          <section className="border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
+        <div className="min-w-0 space-y-6">
+          <section className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-[0_1px_2px_rgb(0_0_0/0.04),0_18px_40px_-32px_rgb(0_0_0/0.22)]">
             <div className="border-b border-[hsl(var(--border))] p-4">
               <div className="flex items-center justify-between">
                 <p className="font-mono text-[8.5px] uppercase tracking-[0.16em] text-[hsl(var(--muted-foreground))]">
@@ -386,13 +386,13 @@ export default async function DashboardPage() {
             </ul>
           </section>
 
-          <section className="border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
+          <section className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-[0_1px_2px_rgb(0_0_0/0.04),0_18px_40px_-32px_rgb(0_0_0/0.22)]">
             <PanelHeader label="INFERENCE / DEFAULT" />
             <div className="p-4">
               {stats?.defaultModel ? (
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex min-w-0 items-center gap-2.5">
-                    <span className="flex size-8 shrink-0 items-center justify-center border border-[hsl(var(--border))] bg-[hsl(var(--background))] text-[hsl(var(--signal))]">
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] text-[hsl(var(--signal))]">
                       <Sparkles className="size-3.5" />
                     </span>
                     <div className="min-w-0">
@@ -424,7 +424,7 @@ export default async function DashboardPage() {
           </section>
 
         </div>
-        <section className="border border-[hsl(var(--border))] bg-[hsl(var(--card))] xl:col-span-2">
+        <section className="overflow-hidden rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-[0_1px_2px_rgb(0_0_0/0.04),0_18px_40px_-32px_rgb(0_0_0/0.22)] xl:col-span-2">
           <div className="flex h-9 items-center justify-between border-b border-[hsl(var(--border))] px-4">
             <p className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-[hsl(var(--muted-foreground))]">
               QUICK LAUNCH

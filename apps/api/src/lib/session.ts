@@ -13,6 +13,7 @@ export function publicUser(row: typeof users.$inferSelect): PublicUser {
   return {
     id: row.id,
     name: row.name,
+    username: row.username ?? null,
     email: row.email,
     createdAt: row.createdAt.toISOString(),
   };

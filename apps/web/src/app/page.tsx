@@ -20,6 +20,8 @@ import {
 import { buttonVariants, cn } from "@astracode/ui";
 import { Logo } from "@/components/brand/logo";
 import { LandingHeader } from "@/components/marketing/landing-header";
+import { LandingMotion } from "@/components/marketing/landing-motion";
+import { MotionCard } from "@/components/marketing/motion-card";
 
 const modules = [
   {
@@ -234,6 +236,7 @@ export default function LandingPage() {
   return (
     <div className="landing dark min-h-dvh bg-[hsl(var(--background))] text-[hsl(var(--foreground))]">
       <LandingHeader />
+      <LandingMotion />
 
       <main>
         <section className="relative isolate overflow-hidden border-b border-[hsl(var(--border))] px-5 pb-20 pt-16 sm:px-8 sm:pb-28 sm:pt-24">
@@ -329,7 +332,7 @@ export default function LandingPage() {
           <div className="mx-auto grid max-w-[1120px] gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
             <div>
               <Eyebrow>Built-in AI</Eyebrow>
-              <h2 className="mt-5 text-balance text-[32px] font-semibold leading-[1.08] tracking-[-0.045em] sm:text-[42px]">
+              <h2 data-word-reveal className="mt-5 text-balance text-[32px] font-semibold leading-[1.08] tracking-[-0.045em] sm:text-[42px]">
                 Your first conversation starts immediately.
               </h2>
               <p className="mt-5 max-w-md text-[14.5px] leading-relaxed text-[hsl(var(--muted-foreground))]">
@@ -423,7 +426,7 @@ export default function LandingPage() {
           <div className="mx-auto max-w-[1120px]">
             <div className="max-w-2xl">
               <Eyebrow>The platform</Eyebrow>
-              <h2 className="mt-5 text-balance text-[32px] font-semibold leading-[1.08] tracking-[-0.045em] sm:text-[42px]">
+              <h2 data-word-reveal className="mt-5 text-balance text-[32px] font-semibold leading-[1.08] tracking-[-0.045em] sm:text-[42px]">
                 Eight instruments. One workspace.
               </h2>
               <p className="mt-4 text-[14.5px] leading-relaxed text-[hsl(var(--muted-foreground))]">
@@ -433,10 +436,11 @@ export default function LandingPage() {
             </div>
 
             <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {modules.map((module) => (
-                <div
+              {modules.map((module, index) => (
+                <MotionCard
                   key={module.title}
-                  className="group rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                  delay={index * 0.045}
+                  className="group rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-5 shadow-xs transition-shadow duration-200 hover:shadow-md"
                 >
                   <span className="flex size-9 items-center justify-center rounded-lg bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] transition-colors group-hover:bg-[hsl(var(--accent))] group-hover:text-[hsl(var(--signal))]">
                     <module.icon className="size-[18px]" />
@@ -445,7 +449,7 @@ export default function LandingPage() {
                   <p className="mt-1.5 text-[12px] leading-relaxed text-[hsl(var(--muted-foreground))]">
                     {module.description}
                   </p>
-                </div>
+                </MotionCard>
               ))}
             </div>
 
@@ -468,7 +472,7 @@ export default function LandingPage() {
           <div className="mx-auto max-w-[1120px]">
             <div className="max-w-2xl">
               <Eyebrow>Architecture</Eyebrow>
-              <h2 className="mt-5 text-balance text-[32px] font-semibold leading-[1.08] tracking-[-0.045em] sm:text-[42px]">
+              <h2 data-word-reveal className="mt-5 text-balance text-[32px] font-semibold leading-[1.08] tracking-[-0.045em] sm:text-[42px]">
                 One request, traced end to end.
               </h2>
               <p className="mt-4 text-[14.5px] leading-relaxed text-[hsl(var(--muted-foreground))]">
@@ -478,10 +482,11 @@ export default function LandingPage() {
             </div>
 
             <div className="mt-10 grid gap-3 md:grid-cols-3">
-              {architecture.map((layer) => (
-                <div
+              {architecture.map((layer, index) => (
+                <MotionCard
                   key={layer.title}
-                  className="rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-6 shadow-xs"
+                  delay={index * 0.08}
+                  className="rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-6 shadow-xs transition-shadow duration-200 hover:shadow-lg"
                 >
                   <div className="flex items-center justify-between">
                     <span className="flex size-9 items-center justify-center rounded-lg bg-[hsl(var(--accent))] text-[hsl(var(--signal))]">
@@ -498,7 +503,7 @@ export default function LandingPage() {
                   <p className="mt-3 text-[12.5px] leading-relaxed text-[hsl(var(--muted-foreground))]">
                     {layer.detail}
                   </p>
-                </div>
+                </MotionCard>
               ))}
             </div>
 
@@ -517,7 +522,7 @@ export default function LandingPage() {
           <div className="mx-auto grid max-w-[1120px] gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:gap-16">
             <div>
               <Eyebrow>Open source</Eyebrow>
-              <h2 className="mt-5 text-balance text-[32px] font-semibold leading-[1.08] tracking-[-0.045em] sm:text-[42px]">
+              <h2 data-word-reveal className="mt-5 text-balance text-[32px] font-semibold leading-[1.08] tracking-[-0.045em] sm:text-[42px]">
                 Run it locally in three commands.
               </h2>
               <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-[hsl(var(--muted-foreground))]">
@@ -574,7 +579,7 @@ export default function LandingPage() {
             />
             <div className="relative">
               <Logo size={28} className="mx-auto" />
-              <h2 className="mx-auto mt-5 max-w-xl text-balance text-[30px] font-semibold leading-[1.1] tracking-[-0.045em] sm:text-[38px]">
+              <h2 data-word-reveal className="mx-auto mt-5 max-w-xl text-balance text-[30px] font-semibold leading-[1.1] tracking-[-0.045em] sm:text-[38px]">
                 Your next project is one message away.
               </h2>
               <p className="mx-auto mt-3 max-w-md text-[14px] leading-relaxed text-[hsl(var(--muted-foreground))]">

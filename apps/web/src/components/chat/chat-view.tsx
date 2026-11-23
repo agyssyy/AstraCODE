@@ -191,11 +191,16 @@ export function ChatView() {
     setOptimisticUser(null);
   }, [activeId]);
 
+  const draftKey = React.useMemo(() => `astra.draft.${activeId ?? "new"}`, [activeId]);
   React.useEffect(() => {
-    return () => {
-      abortRef.current?.abort();
-    };
-  }, []);
+    if (typeof window === "undefined") return;
+    setInput(window.sessionStorage.getItem(draftKey) ?? "");
+  }, [draftKey]);
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (input) window.sessionStorage.setItem(draftKey, input);
+    else window.sessionStorage.removeItem(draftKey);
+  }, [draftKey, input]);
 
   const selectModel = (id: string) => {
     setModelId(id);
@@ -937,7 +942,7 @@ function MessageItem({
 }) {
   if (message.role === "system") {
     return (
-      <div className="border border-dashed border-[hsl(var(--border))] px-3 py-2 text-[11.5px] text-[hsl(var(--muted-foreground))]">
+      <div className="rounded-xl border border-dashed border-[hsl(var(--border))] bg-[hsl(var(--muted))]/30 px-3.5 py-2.5 text-[11.5px] text-[hsl(var(--muted-foreground))]">
         {message.content}
       </div>
     );
@@ -945,9 +950,9 @@ function MessageItem({
 
   if (message.role === "user") {
     return (
-      <div className="flex justify-end">
+      <div className="flex justify-end animate-[message-in_320ms_cubic-bezier(0.16,1,0.3,1)_both]">
         <div className="flex max-w-[85%] items-start gap-2">
-          <div className="max-w-full border border-[hsl(var(--signal))]/35 bg-[hsl(var(--signal))]/[0.07] px-3.5 py-2.5 text-[13px] leading-relaxed">
+          <div className="max-w-full rounded-2xl rounded-br-md border border-[hsl(var(--signal))]/35 bg-[hsl(var(--signal))]/[0.07] px-4 py-2.5 text-[13px] leading-relaxed shadow-[0_10px_30px_-24px_hsl(var(--signal)/0.6)]">
             <p className="whitespace-pre-wrap">{message.content}</p>
           </div>
           <span className="mt-0.5 hidden size-7 shrink-0 items-center justify-center rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] sm:flex">
@@ -959,7 +964,7 @@ function MessageItem({
   }
 
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-3 animate-[message-in_360ms_cubic-bezier(0.16,1,0.3,1)_both]">
       <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
         <AstraMark className="size-4" />
       </span>

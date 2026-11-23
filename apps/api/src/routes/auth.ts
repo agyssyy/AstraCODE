@@ -775,6 +775,11 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
       }
 
       const code = newCode();
+      try {
+        await sendVerificationCode(delivery, code, 10);
+      } catch {
+        throw badRequest("Could not resend the code. Try again in a moment.");
+      }
       await app.db
         .update(twoFactorChallenges)
         .set({
@@ -783,12 +788,6 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
           expiresAt: new Date(Date.now() + TWO_FACTOR_TTL_MS),
         })
         .where(eq(twoFactorChallenges.id, challenge.id));
-
-      try {
-        await sendVerificationCode(delivery, code, 10);
-      } catch {
-        throw badRequest("Could not resend the code. Try again in a moment.");
-      }
 
       return { sent: true, email: maskEmail(email) };
     },

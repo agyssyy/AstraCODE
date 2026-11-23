@@ -131,18 +131,28 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
 
   React.useEffect(() => {
     let active = true;
-    api
-      .get<{ googleEnabled?: boolean; googleClientId?: string }>("/auth/config")
-      .then((config) => {
+    let attempt = 0;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    const load = async () => {
+      try {
+        const config = await api.get<{ googleEnabled?: boolean; googleClientId?: string }>(
+          "/auth/config",
+        );
         if (!active) return;
         setGoogleEnabled(Boolean(config.googleEnabled));
         setGoogleClientId(config.googleClientId ?? "");
-      })
-      .catch(() => {
-        /* Google is optional; keep the password form working. */
-      });
+      } catch {
+        if (!active || attempt >= 3) return;
+        attempt += 1;
+        timer = setTimeout(load, attempt * 1200);
+      }
+    };
+
+    void load();
     return () => {
       active = false;
+      if (timer) clearTimeout(timer);
     };
   }, []);
 
@@ -429,7 +439,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
         </div>
       ) : null}
 
-      <form onSubmit={onSubmit} className={googleEnabled ? "space-y-5" : "mt-8 space-y-5"} noValidate>
+      <form onSubmit={onSubmit} className={googleEnabled && googleClientId ? "space-y-5" : "mt-8 space-y-5"} noValidate>
         {mode === "register" ? (
           <>
             <Field label="Name" htmlFor="name">

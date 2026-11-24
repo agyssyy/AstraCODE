@@ -7,6 +7,7 @@ import {
   AlertCircle,
   ArrowLeft,
   ArrowRight,
+  ArrowUpRight,
   AtSign,
   Eye,
   EyeOff,
@@ -93,6 +94,41 @@ function GoogleMark() {
         d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.7l4 3.1C6.3 6.9 8.9 4.8 12 4.8Z"
       />
     </svg>
+  );
+}
+
+function ModeTabs({ mode, nextParam }: { mode: "login" | "register"; nextParam: string | null }) {
+  const suffix = nextParam ? `?next=${encodeURIComponent(nextParam)}` : "";
+  const tabs = [
+    { mode: "login" as const, label: "Log in", href: `/login${suffix}` },
+    { mode: "register" as const, label: "Sign up", href: `/register${suffix}` },
+  ];
+
+  return (
+    <div
+      role="tablist"
+      aria-label="Authentication mode"
+      className="grid grid-cols-2 gap-1 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--muted))]/70 p-1"
+    >
+      {tabs.map((tab) => {
+        const active = tab.mode === mode;
+        return (
+          <Link
+            key={tab.mode}
+            href={tab.href}
+            role="tab"
+            aria-selected={active}
+            className={
+              active
+                ? "relative rounded-lg bg-[hsl(var(--card))] py-2 text-center text-[12.5px] font-semibold text-[hsl(var(--foreground))] shadow-[0_1px_2px_rgb(0_0_0/0.06),0_8px_24px_-16px_hsl(var(--primary)/0.6)] transition-all"
+                : "relative rounded-lg py-2 text-center text-[12.5px] font-medium text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--foreground))]"
+            }
+          >
+            {tab.label}
+          </Link>
+        );
+      })}
+    </div>
   );
 }
 
@@ -402,44 +438,45 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
 
   return (
     <div>
-      <p className="inline-flex items-center gap-2 rounded-full border border-[hsl(var(--border))] bg-[hsl(var(--card))] px-3 py-1 text-[11px] font-medium text-[hsl(var(--muted-foreground))] shadow-xs">
-        <span className="size-1.5 rounded-full bg-[hsl(var(--signal))]" />
+      <p className="inline-flex items-center gap-2 rounded-full border border-[hsl(var(--border))] bg-[hsl(var(--muted))]/60 px-3 py-1 text-[10.5px] font-medium text-[hsl(var(--muted-foreground))]">
+        <span className="size-1.5 rounded-full bg-[hsl(var(--signal))] shadow-[0_0_10px_hsl(var(--signal))]" />
         {mode === "login" ? "Welcome back" : "Free workspace"}
       </p>
-      <h1 className="mt-4 text-[30px] font-semibold leading-tight tracking-[-0.04em]">
-        {mode === "login" ? "Sign in" : "Create your account"}
+      <h1 className="mt-4 text-[28px] font-semibold leading-[1.08] tracking-[-0.045em] sm:text-[32px]">
+        {mode === "login" ? "Welcome back" : "Create your account"}
       </h1>
-      <p className="mt-2 text-[13px] leading-relaxed text-[hsl(var(--muted-foreground))]">
+      <p className="mt-2 text-[12.5px] leading-relaxed text-[hsl(var(--muted-foreground))]">
         {mode === "login"
-          ? "Enter your credentials to open the workspace."
-          : "Astra Assistant is ready as soon as you are. No provider setup required."}
+          ? "Sign in to pick up where you left off."
+          : "Your assistant is ready. Google creates the workspace for you."}
       </p>
 
-      {googleEnabled && googleClientId ? (
-        <div className="mt-7">
+      <div className="mt-6 space-y-4">
+        {googleEnabled && googleClientId ? (
           <button
             type="button"
             onClick={onGoogle}
             disabled={googlePending}
-            className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[12.5px] font-medium transition-colors hover:bg-[hsl(var(--muted))] disabled:opacity-60"
+            className="group flex h-12 w-full items-center justify-center gap-2.5 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[12.5px] font-semibold shadow-[0_1px_2px_rgb(0_0_0/0.04)] transition-all hover:border-[hsl(var(--signal))]/40 hover:bg-[hsl(var(--muted))]/60 hover:shadow-[0_12px_30px_-22px_hsl(var(--primary)/0.8)] disabled:opacity-60"
           >
             {googlePending ? <LoaderCircle className="size-4 animate-spin" /> : <GoogleMark />}
             Continue with Google
+            <ArrowUpRight className="size-3.5 text-[hsl(var(--muted-foreground))] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </button>
-          <p className="mt-2 text-center text-[10.5px] text-[hsl(var(--muted-foreground))]">
-            First Google sign-in creates the workspace automatically.
-          </p>
-          <div className="my-6 flex items-center gap-3">
-            <span className="h-px flex-1 bg-[hsl(var(--border))]" />
-            <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-[hsl(var(--muted-foreground))]">
-              or use email
-            </span>
-            <span className="h-px flex-1 bg-[hsl(var(--border))]" />
-          </div>
-        </div>
-      ) : null}
+        ) : null}
 
-      <form onSubmit={onSubmit} className={googleEnabled && googleClientId ? "space-y-5" : "mt-8 space-y-5"} noValidate>
+        <div className="flex items-center gap-3">
+          <span className="h-px flex-1 bg-[hsl(var(--border))]" />
+          <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-[hsl(var(--muted-foreground))]">
+            or use email
+          </span>
+          <span className="h-px flex-1 bg-[hsl(var(--border))]" />
+        </div>
+
+        <ModeTabs mode={mode} nextParam={nextParam} />
+      </div>
+
+      <form onSubmit={onSubmit} className="mt-5 space-y-5" noValidate>
         {mode === "register" ? (
           <>
             <Field label="Name" htmlFor="name">
@@ -560,25 +597,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-[12.5px] text-[hsl(var(--muted-foreground))]">
-        {mode === "login" ? (
-          <>
-            New to AstraCode?{" "}
-            <Link href="/register" className="font-medium text-[hsl(var(--primary))] hover:underline">
-              Create an account
-            </Link>
-          </>
-        ) : (
-          <>
-            Already have an account?{" "}
-            <Link href="/login" className="font-medium text-[hsl(var(--primary))] hover:underline">
-              Sign in
-            </Link>
-          </>
-        )}
-      </p>
-
-      <p className="mt-10 border-t border-[hsl(var(--border))] pt-4 text-center text-[10.5px] leading-relaxed text-[hsl(var(--muted-foreground))]">
+      <p className="mt-6 border-t border-[hsl(var(--border))] pt-4 text-center text-[10.5px] leading-relaxed text-[hsl(var(--muted-foreground))]">
         This self-hosted instance stores your projects and provider configuration on your
         machine.
       </p>

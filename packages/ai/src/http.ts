@@ -23,7 +23,8 @@ export function ollamaBase(baseUrl: string): string {
 }
 
 export function authHeaders(apiKey?: string | null): Record<string, string> {
-  return apiKey ? { Authorization: `Bearer ${apiKey}` } : {};
+  const key = apiKey?.trim();
+  return key ? { Authorization: `Bearer ${key}` } : {};
 }
 
 export function mapHttpError(status: number, body: string): AiProviderError {

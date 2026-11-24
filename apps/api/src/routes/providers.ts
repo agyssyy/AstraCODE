@@ -34,7 +34,7 @@ export async function providerRoutes(app: FastifyInstance): Promise<void> {
         name: body.name,
         kind: body.kind,
         baseUrl: body.baseUrl.replace(/\/+$/, ""),
-        apiKeyCipher: body.apiKey ? encryptSecret(body.apiKey) : null,
+        apiKeyCipher: body.apiKey?.trim() ? encryptSecret(body.apiKey.trim()) : null,
       })
       .returning();
     return reply.status(201).send({ provider: toProviderDto(created[0]!, 0) });
@@ -55,7 +55,7 @@ export async function providerRoutes(app: FastifyInstance): Promise<void> {
       if (body.kind !== undefined) update.kind = body.kind;
       if (body.baseUrl !== undefined) update.baseUrl = body.baseUrl.replace(/\/+$/, "");
       if (body.clearKey) update.apiKeyCipher = null;
-      else if (body.apiKey) update.apiKeyCipher = encryptSecret(body.apiKey);
+      else if (body.apiKey?.trim()) update.apiKeyCipher = encryptSecret(body.apiKey.trim());
 
       const updated = await app.db
         .update(aiProviders)

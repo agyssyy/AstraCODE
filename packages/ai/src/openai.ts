@@ -15,7 +15,12 @@ import type {
 import { AiProviderError } from "./types.js";
 
 type OpenAIDelta = {
-  choices?: { delta?: { content?: string | { type?: string; text?: string }[] } }[];
+  choices?: {
+    delta?: {
+      content?: string | { type?: string; text?: string }[];
+      reasoning_content?: string;
+    };
+  }[];
   usage?: { prompt_tokens?: number; completion_tokens?: number } | null;
 };
 
@@ -81,7 +86,9 @@ export async function* streamOpenAI(
       body: JSON.stringify({
         model: options.model,
         messages: options.messages,
-        temperature: options.temperature ?? 0.4,
+        ...(/reasoner|(^|[-_/])r1($|[-_/])|(^|[-_/])o[13]($|[-_/])/i.test(options.model)
+          ? {}
+          : { temperature: options.temperature ?? 0.4 }),
         max_tokens: options.maxTokens,
         stream: true,
         ...(provider.kind === "openai" ? { stream_options: { include_usage: true } } : {}),
@@ -116,6 +123,8 @@ export async function* streamOpenAI(
         inputTokens = parsed.usage.prompt_tokens ?? inputTokens;
         outputTokens = parsed.usage.completion_tokens ?? outputTokens;
       }
+      const reasoning = parsed.choices?.[0]?.delta?.reasoning_content;
+      if (typeof reasoning === "string" && reasoning) yield { type: "reasoning", text: reasoning };
       const text = extractDeltaContent(parsed);
       if (text) yield { type: "text", text };
     }
@@ -145,7 +154,9 @@ export async function completeOpenAI(
       body: JSON.stringify({
         model: options.model,
         messages: options.messages,
-        temperature: options.temperature ?? 0.2,
+        ...(/reasoner|(^|[-_/])r1($|[-_/])|(^|[-_/])o[13]($|[-_/])/i.test(options.model)
+          ? {}
+          : { temperature: options.temperature ?? 0.2 }),
         max_tokens: options.maxTokens,
         stream: false,
       }),

@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { motion } from "motion/react";
 import {
   AlertCircle,
   ArrowLeft,
@@ -97,43 +98,57 @@ function GoogleMark() {
   );
 }
 
-function ModeTabs({ mode, nextParam }: { mode: "login" | "register"; nextParam: string | null }) {
-  const suffix = nextParam ? `?next=${encodeURIComponent(nextParam)}` : "";
+function ModeTabs({
+  mode,
+  onSelect,
+}: {
+  mode: "login" | "register";
+  onSelect: (mode: "login" | "register") => void;
+}) {
   const tabs = [
-    { mode: "login" as const, label: "Log in", href: `/login${suffix}` },
-    { mode: "register" as const, label: "Sign up", href: `/register${suffix}` },
+    { mode: "login" as const, label: "Log in" },
+    { mode: "register" as const, label: "Sign up" },
   ];
+  const active = mode === "register" ? 1 : 0;
 
   return (
     <div
       role="tablist"
       aria-label="Authentication mode"
-      className="grid grid-cols-2 gap-1 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--muted))]/70 p-1"
+      className="relative grid grid-cols-2 gap-1 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--muted))]/70 p-1"
     >
+      <span
+        aria-hidden="true"
+        className={`pointer-events-none absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-lg bg-[hsl(var(--card))] shadow-[0_1px_2px_rgb(0_0_0/0.06),0_10px_24px_-16px_hsl(var(--primary)/0.7)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+          active === 0 ? "translate-x-0" : "translate-x-full"
+        }`}
+      />
       {tabs.map((tab) => {
-        const active = tab.mode === mode;
+        const selected = tab.mode === mode;
         return (
-          <Link
+          <button
             key={tab.mode}
-            href={tab.href}
+            type="button"
             role="tab"
-            aria-selected={active}
+            aria-selected={selected}
+            onClick={() => onSelect(tab.mode)}
             className={
-              active
-                ? "relative rounded-lg bg-[hsl(var(--card))] py-2 text-center text-[12.5px] font-semibold text-[hsl(var(--foreground))] shadow-[0_1px_2px_rgb(0_0_0/0.06),0_8px_24px_-16px_hsl(var(--primary)/0.6)] transition-all"
-                : "relative rounded-lg py-2 text-center text-[12.5px] font-medium text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--foreground))]"
+              selected
+                ? "relative z-10 rounded-lg py-2 text-center text-[12.5px] font-semibold text-[hsl(var(--foreground))] transition-colors"
+                : "relative z-10 rounded-lg py-2 text-center text-[12.5px] font-medium text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--foreground))]"
             }
           >
             {tab.label}
-          </Link>
+          </button>
         );
       })}
     </div>
   );
 }
 
-export function AuthForm({ mode }: { mode: "login" | "register" }) {
+export function AuthForm({ mode: initialMode }: { mode: "login" | "register" }) {
   const router = useRouter();
+  const [mode, setMode] = React.useState<"login" | "register">(initialMode);
   const params = useSearchParams();
   const [pending, setPending] = React.useState(false);
   const [error, setError] = React.useState<string | null>(() => params.get("error"));
@@ -197,6 +212,14 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
     const timer = window.setTimeout(() => setCooldown((value) => value - 1), 1000);
     return () => window.clearTimeout(timer);
   }, [cooldown]);
+
+  const switchMode = (next: "login" | "register") => {
+    if (next === mode) return;
+    setMode(next);
+    const path = next === "login" ? "/login" : "/register";
+    window.history.replaceState(null, "", `${path}${window.location.search}`);
+    document.title = next === "login" ? "Sign in · AstraCode" : "Create account · AstraCode";
+  };
 
   const finish = () => {
     router.push(next);
@@ -473,10 +496,17 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
           <span className="h-px flex-1 bg-[hsl(var(--border))]" />
         </div>
 
-        <ModeTabs mode={mode} nextParam={nextParam} />
+        <ModeTabs mode={mode} onSelect={switchMode} />
       </div>
 
       <form onSubmit={onSubmit} className="mt-5 space-y-5" noValidate>
+        <motion.div
+          key={mode}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+          className="space-y-5"
+        >
         {mode === "register" ? (
           <>
             <Field label="Name" htmlFor="name">
@@ -558,6 +588,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
             </button>
           </div>
         </Field>
+        </motion.div>
 
         {mode === "login" ? (
           <div className="-mt-1 text-right">

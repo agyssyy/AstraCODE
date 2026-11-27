@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, BookOpen } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, ChevronRight } from "lucide-react";
 import { buttonVariants, cn } from "@astracode/ui";
 import { Logo } from "@/components/brand/logo";
 import { Markdown } from "@/components/chat/markdown";
+import { DocsSearch } from "@/components/docs/docs-search";
 
 export const metadata: Metadata = { title: "Documentation" };
 
@@ -129,55 +130,131 @@ const SECTIONS = [
 
 export default function DocsPage() {
   return (
-    <div className="min-h-dvh bg-[hsl(var(--background))]">
-      <header className="sticky top-0 z-20 border-b border-[hsl(var(--border))] bg-[hsl(var(--background))]/85 backdrop-blur">
-        <div className="mx-auto flex h-12 max-w-5xl items-center justify-between px-4">
-          <Link href="/" className="flex items-center gap-2">
-            <Logo />
+    <div className="relative min-h-dvh">
+      <header className="sticky top-0 z-30 px-3 pt-3 sm:px-5 sm:pt-4">
+        <div className="glass-panel mx-auto flex h-14 max-w-[1180px] items-center gap-3 rounded-full px-3 pl-4 sm:px-4 sm:pl-5">
+          <Link href="/" aria-label="AstraCode home" className="shrink-0">
+            <Logo size={23} />
           </Link>
-          <div className="flex items-center gap-2">
-            <Link href="/" className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}>
-              <ArrowLeft className="size-3.5" /> Home
+          <span className="hidden items-center gap-1.5 text-[11.5px] text-[hsl(var(--muted-foreground))] sm:flex">
+            <ChevronRight className="size-3" />
+            Documentation
+          </span>
+          <div className="ml-auto hidden w-64 md:block">
+            <DocsSearch sections={SECTIONS} />
+          </div>
+          <div className="ml-auto flex items-center gap-1.5 md:ml-0">
+            <Link
+              href="/"
+              className="hidden rounded-full px-3 py-1.5 text-[11.5px] font-medium text-[hsl(var(--muted-foreground))] transition-colors hover:bg-white/[0.07] hover:text-[hsl(var(--foreground))] sm:inline"
+            >
+              Home
             </Link>
-            <Link href="/dashboard" className={cn(buttonVariants({ size: "sm" }))}>
+            <Link
+              href="/dashboard"
+              className={cn(buttonVariants({ size: "sm" }), "h-9 rounded-full px-4 text-[12px]")}
+            >
               Open app
+              <ArrowUpRight className="size-3.5" />
             </Link>
           </div>
         </div>
       </header>
 
-      <div className="mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[190px_1fr]">
+      <div className="mx-auto grid max-w-[1180px] gap-4 px-3 py-4 sm:px-5 lg:grid-cols-[230px_1fr] lg:gap-5 lg:py-5">
         <aside className="hidden lg:block">
-          <div className="sticky top-20">
-            <p className="mb-2 flex items-center gap-1.5 px-2 text-[10.5px] font-semibold uppercase tracking-wider text-[hsl(var(--muted-foreground))]">
-              <BookOpen className="size-3" /> On this page
-            </p>
+          <div className="glass-panel sticky top-24 overflow-hidden rounded-[28px] p-3">
+            <div className="px-2.5 pb-2 pt-1">
+              <p className="flex items-center gap-1.5 font-mono text-[8.5px] uppercase tracking-[0.18em] text-[hsl(var(--muted-foreground))]">
+                <BookOpen className="size-3 text-[hsl(var(--signal))]" /> On this page
+              </p>
+            </div>
             <ul className="space-y-0.5">
-              {SECTIONS.map((section) => (
+              {SECTIONS.map((section, index) => (
                 <li key={section.id}>
                   <a
                     href={`#${section.id}`}
-                    className="block rounded px-2 py-1 text-[11.5px] text-[hsl(var(--muted-foreground))] transition-colors hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))]"
+                    className="group flex items-center gap-2 rounded-xl px-2.5 py-2 text-[11.5px] text-[hsl(var(--muted-foreground))] transition-colors hover:bg-white/[0.07] hover:text-[hsl(var(--foreground))]"
                   >
+                    <span className="font-mono text-[8px] text-white/20">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
                     {section.label}
                   </a>
                 </li>
               ))}
             </ul>
+            <div className="mt-3 border-t border-white/[0.08] px-2.5 pt-3">
+              <p className="text-[10px] leading-relaxed text-[hsl(var(--muted-foreground))]">
+                Missing something? Open a discussion on GitHub.
+              </p>
+              <a
+                href="https://github.com/agyssyy/AstraCODE"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="mt-2 inline-flex items-center gap-1 text-[10.5px] font-medium text-[hsl(var(--signal))]"
+              >
+                Repository <ArrowUpRight className="size-3" />
+              </a>
+            </div>
           </div>
         </aside>
 
         <article className="min-w-0">
           <div className="mb-4 lg:hidden">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-[hsl(var(--muted-foreground))]">
-              Documentation
-            </p>
+            <DocsSearch sections={SECTIONS} />
           </div>
-          <Markdown content={CONTENT} />
-          <div className="mt-8 border-t border-[hsl(var(--border))] pt-4 text-[11.5px] text-[hsl(var(--muted-foreground))]">
-            Found an issue? Open a discussion in the repository. AstraCode is open source under the
-            Apache-2.0 license.
+
+          <div className="glass-panel overflow-hidden rounded-[30px]">
+            <div className="border-b border-white/[0.08] px-5 py-5 sm:px-8 sm:py-7">
+              <p className="flex items-center gap-1.5 font-mono text-[8.5px] uppercase tracking-[0.18em] text-[hsl(var(--muted-foreground))]">
+                Docs <ChevronRight className="size-2.5" /> AstraCode
+              </p>
+              <h1 className="mt-3 text-[30px] font-semibold leading-tight tracking-[-0.045em] sm:text-[38px]">
+                Documentation
+              </h1>
+              <p className="mt-2 max-w-xl text-[12.5px] leading-relaxed text-[hsl(var(--muted-foreground))]">
+                Everything from your first local install to provider configuration, agent
+                approvals and self-hosting.
+              </p>
+            </div>
+
+            <div className="px-5 py-7 sm:px-8 sm:py-9">
+              <Markdown content={CONTENT} />
+            </div>
+
+            <div className="grid gap-2 border-t border-white/[0.08] p-4 sm:grid-cols-2 sm:p-5">
+              <a
+                href="#quick-start"
+                className="glass-subtle group flex items-center gap-3 rounded-2xl p-3.5 transition-colors hover:bg-white/[0.08]"
+              >
+                <ArrowLeft className="size-4 text-[hsl(var(--muted-foreground))]" />
+                <span>
+                  <span className="block text-[9px] uppercase tracking-[0.14em] text-[hsl(var(--muted-foreground))]">
+                    Previous
+                  </span>
+                  <span className="text-[12px] font-medium">Quick start</span>
+                </span>
+              </a>
+              <a
+                href="#connect-a-model"
+                className="glass-subtle group flex items-center justify-end gap-3 rounded-2xl p-3.5 text-right transition-colors hover:bg-white/[0.08]"
+              >
+                <span>
+                  <span className="block text-[9px] uppercase tracking-[0.14em] text-[hsl(var(--muted-foreground))]">
+                    Next
+                  </span>
+                  <span className="text-[12px] font-medium">Connect a model</span>
+                </span>
+                <ArrowRight className="size-4 text-[hsl(var(--muted-foreground))]" />
+              </a>
+            </div>
           </div>
+
+          <p className="mt-4 px-2 text-[10.5px] text-[hsl(var(--muted-foreground))]">
+            AstraCode is open source under the Apache-2.0 license. Found an issue? Open a
+            discussion in the repository.
+          </p>
         </article>
       </div>
     </div>

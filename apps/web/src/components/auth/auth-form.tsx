@@ -115,11 +115,11 @@ function ModeTabs({
     <div
       role="tablist"
       aria-label="Authentication mode"
-      className="relative grid grid-cols-2 gap-1 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--muted))]/70 p-1"
+      className="glass-pill relative grid grid-cols-2 gap-1 rounded-2xl p-1"
     >
       <span
         aria-hidden="true"
-        className={`pointer-events-none absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-lg bg-[hsl(var(--card))] shadow-[0_1px_2px_rgb(0_0_0/0.06),0_10px_24px_-16px_hsl(var(--primary)/0.7)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+        className={`pointer-events-none absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-xl bg-[linear-gradient(135deg,hsl(var(--signal)/0.95),hsl(var(--iris)/0.9))] shadow-[0_10px_28px_-14px_hsl(var(--iris)/0.8)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
           active === 0 ? "translate-x-0" : "translate-x-full"
         }`}
       />
@@ -133,9 +133,9 @@ function ModeTabs({
             aria-selected={selected}
             onClick={() => onSelect(tab.mode)}
             className={
-              selected
-                ? "relative z-10 rounded-lg py-2 text-center text-[12.5px] font-semibold text-[hsl(var(--foreground))] transition-colors"
-                : "relative z-10 rounded-lg py-2 text-center text-[12.5px] font-medium text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--foreground))]"
+                  selected
+                    ? "relative z-10 rounded-xl py-2 text-center text-[12.5px] font-semibold text-white transition-colors"
+                    : "relative z-10 rounded-xl py-2 text-center text-[12.5px] font-medium text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--foreground))]"
             }
           >
             {tab.label}
@@ -371,7 +371,7 @@ export function AuthForm({ mode: initialMode }: { mode: "login" | "register" }) 
   if (stage === "code" && challenge) {
     return (
       <div>
-        <p className="inline-flex items-center gap-2 rounded-full border border-[hsl(var(--border))] bg-[hsl(var(--card))] px-3 py-1 text-[11px] font-medium text-[hsl(var(--muted-foreground))] shadow-xs">
+        <p className="glass-pill inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-medium text-[hsl(var(--muted-foreground))]">
           <MailCheck className="size-3.5 text-[hsl(var(--signal))]" />
           Two-step verification
         </p>
@@ -480,7 +480,7 @@ export function AuthForm({ mode: initialMode }: { mode: "login" | "register" }) 
             type="button"
             onClick={onGoogle}
             disabled={googlePending}
-            className="group flex h-12 w-full items-center justify-center gap-2.5 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[12.5px] font-semibold shadow-[0_1px_2px_rgb(0_0_0/0.04)] transition-all hover:border-[hsl(var(--signal))]/40 hover:bg-[hsl(var(--muted))]/60 hover:shadow-[0_12px_30px_-22px_hsl(var(--primary)/0.8)] disabled:opacity-60"
+            className="glass-pill group flex h-12 w-full items-center justify-center gap-2.5 rounded-2xl text-[12.5px] font-semibold transition-all hover:border-[hsl(var(--signal))]/40 hover:bg-white/10 hover:shadow-[0_12px_30px_-22px_hsl(var(--iris)/0.8)] disabled:opacity-60"
           >
             {googlePending ? <LoaderCircle className="size-4 animate-spin" /> : <GoogleMark />}
             Continue with Google

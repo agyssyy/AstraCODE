@@ -91,8 +91,12 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <header className="flex flex-col gap-6 border-b border-[hsl(var(--border))] pb-7 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+      <header className="glass-panel glass-sheen relative flex flex-col gap-6 overflow-hidden rounded-[30px] p-5 sm:flex-row sm:items-end sm:justify-between sm:p-7">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-24 -top-32 size-72 rounded-full bg-[hsl(var(--iris)/0.2)] blur-3xl"
+        />
+        <div className="relative">
           <p className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.16em] text-[hsl(var(--muted-foreground))]">
             <span className="size-1.5 bg-[hsl(var(--signal))]" />
             {new Date().toLocaleDateString(undefined, {
@@ -114,7 +118,7 @@ export default async function DashboardPage() {
           <form
             action="/chat"
             method="get"
-            className="mt-5 flex max-w-xl items-center gap-2 rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))]/85 p-1.5 shadow-[0_18px_50px_-36px_hsl(var(--signal)/0.45)] backdrop-blur-xl focus-within:border-[hsl(var(--signal))]/60"
+            className="glass-panel mt-5 flex max-w-xl items-center gap-2 rounded-[20px] p-1.5 focus-within:border-[hsl(var(--signal))]/60"
           >
             <Sparkles className="ml-2.5 size-4 shrink-0 text-[hsl(var(--signal))]" />
             <input
@@ -133,7 +137,7 @@ export default async function DashboardPage() {
             </button>
           </form>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="relative flex flex-wrap gap-2">
           <a
             href={githubUrl}
             target="_blank"
@@ -166,7 +170,7 @@ export default async function DashboardPage() {
         </div>
       </header>
 
-      <section aria-label="Workspace overview" className="stagger-fade overflow-hidden rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-[0_1px_2px_rgb(0_0_0/0.04),0_18px_40px_-30px_rgb(0_0_0/0.25)]">
+      <section aria-label="Workspace overview" className="glass-panel glass-sheen stagger-fade overflow-hidden rounded-[24px]">
         <div className="flex items-center justify-between border-b border-[hsl(var(--border))] px-4 py-2">
           <p className="font-mono text-[8.5px] uppercase tracking-[0.16em] text-[hsl(var(--muted-foreground))]">
             SYSTEM / OVERVIEW
@@ -218,7 +222,7 @@ export default async function DashboardPage() {
 
       <div className="stagger-fade grid gap-6 xl:grid-cols-[1.55fr_1fr]">
         <div className="min-w-0 space-y-6">
-          <section className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-[0_1px_2px_rgb(0_0_0/0.04),0_18px_40px_-32px_rgb(0_0_0/0.22)]">
+          <section className="glass-panel glass-sheen rounded-[24px]">
             <PanelHeader
               label="PROJECTS / RECENT"
               action={
@@ -277,7 +281,7 @@ export default async function DashboardPage() {
             )}
           </section>
 
-          <section className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-[0_1px_2px_rgb(0_0_0/0.04),0_18px_40px_-32px_rgb(0_0_0/0.22)]">
+          <section className="glass-panel glass-sheen rounded-[24px]">
             <PanelHeader
               label="ASTRA / THREADS"
               action={
@@ -330,7 +334,7 @@ export default async function DashboardPage() {
         </div>
 
         <div className="min-w-0 space-y-6">
-          <section className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-[0_1px_2px_rgb(0_0_0/0.04),0_18px_40px_-32px_rgb(0_0_0/0.22)]">
+          <section className="glass-panel glass-sheen rounded-[24px]">
             <div className="border-b border-[hsl(var(--border))] p-4">
               <div className="flex items-center justify-between">
                 <p className="font-mono text-[8.5px] uppercase tracking-[0.16em] text-[hsl(var(--muted-foreground))]">
@@ -386,7 +390,7 @@ export default async function DashboardPage() {
             </ul>
           </section>
 
-          <section className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-[0_1px_2px_rgb(0_0_0/0.04),0_18px_40px_-32px_rgb(0_0_0/0.22)]">
+          <section className="glass-panel glass-sheen rounded-[24px]">
             <PanelHeader label="INFERENCE / DEFAULT" />
             <div className="p-4">
               {stats?.defaultModel ? (
@@ -424,7 +428,7 @@ export default async function DashboardPage() {
           </section>
 
         </div>
-        <section className="overflow-hidden rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] shadow-[0_1px_2px_rgb(0_0_0/0.04),0_18px_40px_-32px_rgb(0_0_0/0.22)] xl:col-span-2">
+        <section className="glass-panel glass-sheen overflow-hidden rounded-[24px] xl:col-span-2">
           <div className="flex h-9 items-center justify-between border-b border-[hsl(var(--border))] px-4">
             <p className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-[hsl(var(--muted-foreground))]">
               QUICK LAUNCH

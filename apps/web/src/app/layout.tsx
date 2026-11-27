@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import "@fontsource-variable/plus-jakarta-sans";
+import "@fontsource-variable/manrope";
 import "@fontsource/jetbrains-mono/400.css";
 import "@fontsource/jetbrains-mono/500.css";
 import "@fontsource/jetbrains-mono/600.css";
@@ -22,8 +22,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f2f6fb" },
-    { media: "(prefers-color-scheme: dark)", color: "#080b13" },
+    { media: "(prefers-color-scheme: light)", color: "#eff7fb" },
+    { media: "(prefers-color-scheme: dark)", color: "#080d1a" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -36,6 +36,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="min-h-dvh font-sans antialiased">
+        <div className="liquid-atmosphere" aria-hidden="true">
+          <span className="orb-a" />
+          <span className="orb-b" />
+          <span className="orb-c" />
+        </div>
+        <div className="relative z-10">
         <ThemeProvider>
           {children}
           <Toaster
@@ -49,6 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             }}
           />
         </ThemeProvider>
+        </div>
       </body>
     </html>
   );

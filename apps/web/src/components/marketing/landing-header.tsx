@@ -2,15 +2,15 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Menu, X } from "lucide-react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 import { buttonVariants, cn } from "@astracode/ui";
 import { Logo } from "@/components/brand/logo";
 
 const links = [
-  { href: "#assistant", label: "Assistant" },
   { href: "#platform", label: "Platform" },
+  { href: "#workflow", label: "Workflow" },
+  { href: "#models", label: "Models" },
   { href: "#architecture", label: "Architecture" },
-  { href: "#open-source", label: "Open source" },
   { href: "/docs", label: "Docs" },
 ];
 
@@ -33,98 +33,99 @@ export function LandingHeader() {
 
   return (
     <>
-    <header className="sticky top-0 z-40 border-b border-[hsl(var(--border))] bg-[hsl(var(--background))]/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-[1120px] items-center gap-4 px-4 sm:px-6">
-        <Link href="/" aria-label="AstraCode home" className="shrink-0">
-          <Logo size={24} />
-        </Link>
-        <nav className="ml-6 hidden items-center gap-1 md:flex">
-          {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="rounded-lg px-2.5 py-1.5 text-[12.5px] font-medium text-[hsl(var(--muted-foreground))] transition-colors hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))]"
+      <header className="sticky top-0 z-40 px-3 pt-3 sm:px-5 sm:pt-4">
+        <div className="glass-panel mx-auto flex h-14 max-w-[1120px] items-center gap-3 rounded-full px-3 pl-4 sm:px-4 sm:pl-5">
+          <Link href="/" aria-label="AstraCode home" className="shrink-0">
+            <Logo size={23} />
+          </Link>
+          <nav className="ml-3 hidden items-center gap-0.5 md:flex">
+            {links.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="rounded-full px-3 py-1.5 text-[12px] font-medium text-white/50 transition-colors hover:bg-white/[0.07] hover:text-white/90"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+          <div className="ml-auto flex items-center gap-1.5">
+            <Link
+              href="/login"
+              className="hidden rounded-full px-3 py-1.5 text-[12px] font-medium text-white/50 transition-colors hover:bg-white/[0.07] hover:text-white/90 sm:inline"
             >
-              {link.label}
-            </a>
-          ))}
-        </nav>
-        <div className="ml-auto flex items-center gap-1.5">
-          <Link
-            href="/login"
-            className="hidden rounded-lg px-2.5 py-1.5 text-[12.5px] font-medium text-[hsl(var(--muted-foreground))] transition-colors hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))] sm:inline"
-          >
-            Sign in
-          </Link>
-          <Link
-            href="/register"
-            className={cn(buttonVariants({ size: "sm" }), "group ml-0.5 hidden sm:inline-flex")}
-          >
-            Start building
-            <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-          </Link>
-          <button
-            type="button"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            aria-controls="marketing-mobile-menu"
-            onClick={() => setOpen((value) => !value)}
-            className="ml-0.5 flex size-9 items-center justify-center rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[hsl(var(--foreground))] transition-colors hover:bg-[hsl(var(--muted))] md:hidden"
-          >
-            {open ? <X className="size-4" /> : <Menu className="size-4" />}
-          </button>
+              Sign in
+            </Link>
+            <Link
+              href="/register"
+              className={cn(
+                buttonVariants({ size: "sm" }),
+                "group hidden h-9 rounded-full px-4 text-[12px] shadow-[0_14px_32px_-16px_hsl(var(--signal)/0.9)] sm:inline-flex",
+              )}
+            >
+              Start building
+              <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </Link>
+            <button
+              type="button"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              aria-controls="marketing-mobile-menu"
+              onClick={() => setOpen((value) => !value)}
+              className="glass-pill flex size-9 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10 md:hidden"
+            >
+              {open ? <X className="size-4" /> : <Menu className="size-4" />}
+            </button>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+
       {open ? (
-        <div id="marketing-mobile-menu" className="fixed inset-x-0 bottom-0 top-16 z-40 md:hidden">
+        <div id="marketing-mobile-menu" className="fixed inset-0 z-50 md:hidden">
           <div
-            className="absolute inset-0 animate-[fade-in_160ms_ease-out_both] bg-black/40 backdrop-blur-sm"
+            className="absolute inset-0 animate-[fade-in_160ms_ease-out_both] bg-black/50 backdrop-blur-md"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute inset-y-0 right-0 flex w-full animate-[slide-in-right_260ms_cubic-bezier(0.16,1,0.3,1)_both] flex-col bg-[hsl(var(--background))] shadow-2xl sm:w-[min(20rem,88vw)] sm:border-l sm:border-[hsl(var(--border))]">
-            <div className="flex items-center justify-between border-b border-[hsl(var(--border))] px-5 py-4">
-              <p className="text-[12px] font-semibold">Menu</p>
+          <div className="glass-strong absolute inset-x-3 top-3 animate-[slide-in-right_260ms_cubic-bezier(0.16,1,0.3,1)_both] overflow-hidden rounded-[28px] p-3 shadow-2xl">
+            <div className="flex items-center justify-between px-2 py-1.5">
+              <Logo size={22} />
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
-                className="flex size-8 items-center justify-center rounded-lg text-[hsl(var(--muted-foreground))] transition-colors hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))]"
+                className="glass-pill flex size-8 items-center justify-center rounded-full text-white/70"
               >
                 <X className="size-4" />
               </button>
             </div>
-            <nav className="flex-1 p-3">
+            <nav className="mt-3 grid gap-1">
               {links.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="group flex items-center justify-between rounded-lg px-3 py-3 text-[14px] font-medium transition-colors hover:bg-[hsl(var(--muted))]"
+                  className="group flex items-center justify-between rounded-2xl px-3.5 py-3 text-[14px] font-medium text-white/80 transition-colors hover:bg-white/[0.07]"
                 >
                   {link.label}
-                  <ArrowUpRight className="size-4 text-[hsl(var(--muted-foreground))] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  <ArrowUpRight className="size-4 text-white/30 transition-colors group-hover:text-[hsl(var(--signal))]" />
                 </a>
               ))}
             </nav>
-            <div className="space-y-2 border-t border-[hsl(var(--border))] p-4">
+            <div className="mt-3 grid grid-cols-2 gap-2 border-t border-white/[0.08] pt-3">
               <Link
                 href="/login"
                 onClick={() => setOpen(false)}
-                className={cn(buttonVariants({ variant: "secondary", size: "lg" }), "w-full")}
+                className="glass-pill flex h-11 items-center justify-center rounded-full text-[13px] font-medium text-white/80"
               >
                 Sign in
               </Link>
               <Link
                 href="/register"
                 onClick={() => setOpen(false)}
-                className={cn(buttonVariants({ size: "lg" }), "w-full")}
+                className={cn(buttonVariants({ size: "sm" }), "h-11 justify-center rounded-full text-[13px]")}
               >
-                Start building <ArrowRight className="size-4" />
+                Start free
               </Link>
-              <p className="pt-2 text-center text-[10.5px] text-[hsl(var(--muted-foreground))]">
-                Apache-2.0 · Self-hosted
-              </p>
             </div>
           </div>
         </div>

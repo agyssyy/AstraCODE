@@ -6,7 +6,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Plus Jakarta Sans Variable", "Plus Jakarta Sans", "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ["Manrope Variable", "Manrope", "ui-sans-serif", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       colors: {
@@ -44,6 +44,10 @@ const config: Config = {
           foreground: "hsl(var(--destructive-foreground))",
         },
         sidebar: "hsl(var(--sidebar))",
+        iris: "hsl(var(--violet))",
+        seafoam: "hsl(var(--mint))",
+        blush: "hsl(var(--rose))",
+        ice: "hsl(var(--ice))",
       },
       borderRadius: {
         none: "0px",

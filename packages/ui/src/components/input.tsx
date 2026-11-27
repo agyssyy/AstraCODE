@@ -7,7 +7,7 @@ export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttribute
       ref={ref}
       type={type}
       className={cn(
-        "flex h-10 w-full rounded-lg border border-[hsl(var(--input))] bg-[hsl(var(--card))] px-3 py-1 text-[13.5px] text-[hsl(var(--foreground))] shadow-xs transition-[border-color,box-shadow] placeholder:text-[hsl(var(--muted-foreground))]/80 hover:border-[hsl(var(--foreground))]/20 focus-visible:border-[hsl(var(--signal))] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[hsl(var(--signal))]/15 disabled:cursor-not-allowed disabled:opacity-50",
+        "flex h-10 w-full rounded-xl border border-[hsl(var(--input))]/80 bg-[hsl(var(--card))]/55 backdrop-blur-xl px-3 py-1 text-[13.5px] text-[hsl(var(--foreground))] shadow-xs transition-[border-color,box-shadow] placeholder:text-[hsl(var(--muted-foreground))]/80 hover:border-[hsl(var(--foreground))]/20 focus-visible:border-[hsl(var(--signal))] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[hsl(var(--signal))]/15 disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}
       {...props}
@@ -23,7 +23,7 @@ export const Textarea = React.forwardRef<
   <textarea
     ref={ref}
     className={cn(
-      "flex min-h-[96px] w-full resize-y rounded-lg border border-[hsl(var(--input))] bg-[hsl(var(--card))] px-3 py-2 text-[13.5px] text-[hsl(var(--foreground))] shadow-xs transition-[border-color,box-shadow] placeholder:text-[hsl(var(--muted-foreground))]/80 hover:border-[hsl(var(--foreground))]/20 focus-visible:border-[hsl(var(--signal))] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[hsl(var(--signal))]/15 disabled:cursor-not-allowed disabled:opacity-50",
+      "flex min-h-[96px] w-full resize-y rounded-xl border border-[hsl(var(--input))]/80 bg-[hsl(var(--card))]/55 backdrop-blur-xl px-3 py-2 text-[13.5px] text-[hsl(var(--foreground))] shadow-xs transition-[border-color,box-shadow] placeholder:text-[hsl(var(--muted-foreground))]/80 hover:border-[hsl(var(--foreground))]/20 focus-visible:border-[hsl(var(--signal))] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[hsl(var(--signal))]/15 disabled:cursor-not-allowed disabled:opacity-50",
       className,
     )}
     {...props}

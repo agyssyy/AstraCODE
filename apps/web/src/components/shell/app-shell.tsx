@@ -210,7 +210,7 @@ function MobileNav({ pathname, onMore }: { pathname: string; onMore: () => void 
   return (
     <nav
       aria-label="Primary"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-[hsl(var(--border))] bg-[hsl(var(--background))]/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden"
+      className="glass-panel fixed inset-x-3 bottom-3 z-40 overflow-hidden rounded-[26px] pb-[env(safe-area-inset-bottom)] lg:hidden"
     >
       <div className="grid grid-cols-5">
         {mobileItems.map((item) => {
@@ -231,7 +231,7 @@ function MobileNav({ pathname, onMore }: { pathname: string; onMore: () => void 
               <span
                 className={cn(
                   "flex h-7 w-11 items-center justify-center rounded-lg transition-colors",
-                  active && "bg-[hsl(var(--accent))]",
+                  active && "glass-subtle",
                 )}
               >
                 <Icon className={cn("size-[17px]", active && "text-[hsl(var(--signal))]")} />
@@ -268,8 +268,8 @@ export function AppShell({ user, children }: { user: PublicUser; children: React
   const flush = pathname.startsWith("/chat") || pathname.startsWith("/studio");
 
   return (
-    <div className="min-h-dvh bg-[hsl(var(--background))]">
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[244px] border-r border-[hsl(var(--border))] bg-[hsl(var(--sidebar))] lg:block">
+    <div className="relative min-h-dvh">
+      <aside className="glass-panel fixed inset-y-3 left-3 z-40 hidden w-[236px] overflow-hidden rounded-[28px] lg:block">
         <SidebarContent user={user} />
       </aside>
 
@@ -279,7 +279,7 @@ export function AppShell({ user, children }: { user: PublicUser; children: React
             className="absolute inset-0 animate-[fade-in_180ms_ease-out_both] bg-black/40 backdrop-blur-sm"
             onClick={() => setSidebarOpen(false)}
           />
-          <div className="absolute inset-y-0 left-0 w-[280px] animate-[slide-in-left_260ms_cubic-bezier(0.16,1,0.3,1)_both] border-r border-[hsl(var(--border))] bg-[hsl(var(--sidebar))] shadow-2xl">
+          <div className="glass-strong absolute inset-y-3 left-3 w-[280px] animate-[slide-in-left_260ms_cubic-bezier(0.16,1,0.3,1)_both] overflow-hidden rounded-[28px] shadow-2xl">
             <SidebarContent
               user={user}
               onNavigate={() => setSidebarOpen(false)}
@@ -289,12 +289,13 @@ export function AppShell({ user, children }: { user: PublicUser; children: React
         </div>
       ) : null}
 
-      <div className="lg:pl-[244px]">
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-[hsl(var(--border))] bg-[hsl(var(--background))]/85 px-4 backdrop-blur-xl sm:px-6">
+      <div className="lg:pl-[260px]">
+        <header className="sticky top-0 z-30 px-3 pt-3">
+        <div className="glass-panel flex h-14 items-center gap-3 rounded-full px-3 sm:px-4">
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-lg lg:hidden"
+            className="rounded-full lg:hidden"
             onClick={() => setSidebarOpen(true)}
             aria-label="Open menu"
           >
@@ -356,12 +357,13 @@ export function AppShell({ user, children }: { user: PublicUser; children: React
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+        </div>
         </header>
 
         <main
           className={cn(
             flush
-              ? "h-[calc(100svh-8rem)] overflow-hidden lg:h-[calc(100svh-3.5rem)]"
+              ? "h-[calc(100svh-9.5rem)] overflow-hidden lg:h-[calc(100svh-5.25rem)]"
               : "min-h-[calc(100svh-3.5rem)] px-4 pb-28 pt-6 sm:px-6 lg:px-8 lg:pb-10",
           )}
         >
